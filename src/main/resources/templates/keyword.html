@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<style>
+header {
+  background: deeppink;
+  color: white;
+  padding-left: 32px;
+  padding-right: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  opacity: 0.7;
+  backdrop-filter: blur(30px);
+}
+ul a {
+  display: inline-block;
+  margin-left: 16px;
+  font-size: 18px;
+  font-weight: bold;
+}
+    #nav {
+        text-align: center;
+    }
+    ul {
+        list-style: none;
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+    }
+    ul li {
+        float: left;
+        margin: 0 0px;
+    }
+    ul li a {
+        color: white;
+    }
+    #container {
+        margin: 0 auto;
+        border: 20px solid #fff;
+    }
+    #wrapper {
+      display: grid;
+      grid-template-columns: 50% 50%;
+      height : 80%;
+      margin: 15px;
+    }
+    .items:nth-child(2n+1) {
+        margin : 10px;
+        padding : 10px;
+        text-align : center;
+        border : 1px solid black;
+    }
+    .items:nth-child(2n) {
+        margin : 10px;
+        padding: 10px;
+        text-align : center;
+        border : 1px solid black;
+    }
+    @media ( max-width: 300px ) {
+        #wrapper {
+      display: grid;
+      grid-template-columns: 100%;
+      height : 80%;
+      margin: 15px;
+    }
+    .items:nth-child(2n+1) {
+        margin : 10px;
+        padding : 10px;
+        text-align : center;
+        border : 1px solid black;
+    }
+    .items:nth-child(2n) {
+        margin : 10px;
+        padding: 10px;
+        text-align : center;
+        border : 1px solid black;
+    }
+      }
+</style>
+<body>
+<div id = "container">
+    <div>
+        <div>플랫폼</div>
+        <a href="/hub/naver">네이버</a>
+        <a href="/hub/kakao">카카오</a>
+    </div>
+    <form action="/hub" method="get">
+        <div class="form-group">
+            <input type="text" name="keyword">
+        </div>
+        <button type="submit">검색</button>
+
+    </form>
+    <div id = "wrapper" >
+        <div class="items" th:each="webtoon : ${webtoons}">
+            <a th:href ="${webtoon.url}">
+                <div>
+                    <img th:src = "${webtoon.img}" style="min-width:20px;"/>
+                </div>
+            </a>
+            <div>
+                <a th:href ="${webtoon.url}">
+                    <h4 th:text="${webtoon.title}"></h4>
+                    <div>
+                        <p th:text="${webtoon.author}"></p>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>
