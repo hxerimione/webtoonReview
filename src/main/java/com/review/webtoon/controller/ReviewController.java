@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -52,9 +53,6 @@ public class ReviewController {
     }
     @PostMapping("/review/new")
     public String createReview(@Valid ReviewDto dto){
-        System.out.println("hello");
-        System.out.println(dto.getTitle());
-        System.out.println(dto.getWebtoonId());
         Webtoon webtoon=webtoonService.findWebtoonById(dto.getWebtoonId()).get();
         String img = webtoon.getImg();
         Review review = Review
@@ -79,5 +77,27 @@ public class ReviewController {
             model.addAttribute("webtoons", webtoonList);
             return "review/selectWebtoon";
         }
+    }
+    @GetMapping("/update/{id}")
+    public String update(@PathVariable Long id, Model model){
+        Review review = reviewService.findById(id).get();
+
+        model.addAttribute(review);
+        return "review/updateReview";
+
+    }
+    @PutMapping("/update/{id}")
+    public String update(@PathVariable Long id,@Valid ReviewDto form){
+        System.out.println("happy");
+        Review review = reviewService.findById(id).get();
+        review.update(form);
+        reviewService.saveReview(review);
+        return "redirect:/review";
+    }
+    @DeleteMapping("/review/{id}")
+    public String delete(@PathVariable Long id){
+        Review review = reviewService.findById(id).get();
+        reviewService.deleteById(id);
+        return "redirect:/review";
     }
 }

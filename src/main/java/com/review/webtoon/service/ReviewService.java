@@ -28,5 +28,5 @@ public class ReviewService {
     public Optional<Review> findById(Long id){
         return reviewRepository.findById(id);
     }
-
+    public void deleteById(Long id){ reviewRepository.deleteById(id);}
 }
