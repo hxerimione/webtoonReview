@@ -13,11 +13,13 @@ public class NaverUserInfo implements OAuth2UserInfo{
 
     @Override
     public Map<String, Object> getAttributes() {
+
         return attributes;
     }
 
     @Override
     public String getProviderId() {
+        System.out.println(attributes);
         return attributesResponse.get("id").toString();
     }
 

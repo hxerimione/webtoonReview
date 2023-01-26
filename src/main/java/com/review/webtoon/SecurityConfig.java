@@ -1,5 +1,7 @@
 package com.review.webtoon;
 
+import com.review.webtoon.service.PrincipalOAuth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -9,37 +11,36 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired private PrincipalOAuth2UserService principalOAuth2UserService;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/user/**").authenticated()
+        http.csrf().disable();
+        http.authorizeRequests()
+                    .antMatchers("/user/**").authenticated()
                 //user 주소에 대해 인증 요구
-                .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN')")
+                    .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN')")
                 //manager주소는 매니저 권한이나 어드민 권한 있어야 접근가능
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                    .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                 //admin주소는 어드민권한 있어야 접근가능
-                .anyRequest().permitAll()//나머지 주소는 인증없지 접근 가능
+                    .anyRequest().permitAll()//나머지 주소는 인증없지 접근 가능
                 .and()
-                .formLogin()
-                //formlogin기반
-                .loginPage("/loginForm")
-                //인증 필요한 URL 접근시 /loginForm 으로 이동
-                .usernameParameter("id")
-                //로그인 시 form에서 가져올 값
-                .passwordParameter("pw")
-                //로그인 시 form에서 가져올 값
-                .loginProcessingUrl("/login")
-                //로그인을 처리할 URL 입력
-                .defaultSuccessUrl("/")
-                //로그인 성공하면 "/"으로 이동
-                .failureUrl("/loginForm")
-                //로그인 실패 시 /loginForm 으로 이동
+                    .formLogin()
+                        .loginPage("/loginForm")
+                        .usernameParameter("id")
+                        .passwordParameter("pw")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/loginForm")
                 .and()
-                .logout()
-                .logoutUrl("/logout")
-                //로그아웃을 처리할 URL 입력
-                .logoutSuccessUrl("/");
-                //로그아웃 성공 시 "/"으로 이동
+                    .logout()
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                .and()
+                    .oauth2Login()
+                        .loginPage("/loginForm")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/loginForm")
+                        .userInfoEndpoint()
+                        .userService(principalOAuth2UserService);
     }
 }

@@ -4,6 +4,7 @@ import com.review.webtoon.auth.PrincipalDetails;
 import com.review.webtoon.dto.Role;
 import com.review.webtoon.dto.User;
 import com.review.webtoon.repository.UserRepository;
+import com.review.webtoon.userinfo.KakaoUserInfo;
 import com.review.webtoon.userinfo.NaverUserInfo;
 import com.review.webtoon.userinfo.OAuth2UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -30,6 +30,8 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         String provider = userRequest.getClientRegistration().getRegistrationId();
         if(provider.equals("naver")){
             oAuth2UserInfo = new NaverUserInfo(oAuth2User.getAttributes());
+        }else if (provider.equals("kakao")){
+            oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
         }
         String providerId = oAuth2UserInfo.getProviderId();
         String username = provider + "_"+ providerId;
@@ -38,11 +40,11 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         String password = bCryptPasswordEncoder.encode("패스워드"+uuid);
 
         String email = oAuth2User.getAttribute("email");
-        Role role = Role.USER;
+        Role role = Role.ROLE_USER;
 
-        User byUsername = userRepository.findByUsername(username).get();
+        User byUsername = userRepository.findByUsername(username);
 
-        if(byUsername == null){
+        if(userRepository.findByUsername(username) == null){
             byUsername = User.oauth2Register()
                     .username(username).password(password).email(email).role(role)
                     .provider(provider).providerId(providerId)

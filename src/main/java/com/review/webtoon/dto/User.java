@@ -11,11 +11,8 @@ public class User extends BaseTimeEntity{
     @GeneratedValue
     @Id
     private Long id;
-
     private String username;
-    @Setter
     private String password;
-
     private String email;
 
     @Enumerated(EnumType.STRING)
@@ -25,7 +22,7 @@ public class User extends BaseTimeEntity{
     private String provider; //oauth2를 이용할 경우 어떤 플랫폼을 이용할지 Ex naver,kakao
     private String providerId; //oauth2를 이용할 경우 아이디값
 
-    @Builder(builderClassName = "UserDetailRegister", builderMethodName = "userDetailRegister")
+    @Builder
     public User(String username, String password, String email,Role role){
         this.username = username;
         this.password = password;

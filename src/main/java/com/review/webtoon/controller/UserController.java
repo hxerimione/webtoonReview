@@ -1,10 +1,10 @@
 package com.review.webtoon.controller;
 
 import com.review.webtoon.auth.PrincipalDetails;
-import com.review.webtoon.dto.Role;
-import com.review.webtoon.dto.User;
+import com.review.webtoon.dto.*;
 import com.review.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,10 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 
 @Controller
-@RequiredArgsConstructor
 public class UserController {
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired private UserRepository userRepository;
+    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/loginForm")
     public String loginForm(){
@@ -31,14 +30,16 @@ public class UserController {
     public String joinForm(){
         return "join";
     }
-    @PostMapping("/join")
-    public String join(@ModelAttribute User user){
-        user.setRole(Role.USER);
-        //비밀번호 암호화
-        String encodePwd = bCryptPasswordEncoder.encode(user.getPassword());
-        user.setPassword(encodePwd);
 
-        userRepository.save(user);
+
+    @PostMapping("/join")
+    public String join(@ModelAttribute UserJoin userRequest){
+        userRequest.setRole(Role.ROLE_USER);
+        //비밀번호 암호화
+        String encodePwd = bCryptPasswordEncoder.encode(userRequest.getPassword());
+        userRequest.setPassword(encodePwd);
+        //DTO to Entity
+        userRepository.save(userRequest.toEntity());
         return "redirect:/loginForm";
     }
     @GetMapping("/user")
@@ -62,13 +63,13 @@ public class UserController {
     @ResponseBody
     public String formLoginInfo(Authentication authentication, @AuthenticationPrincipal PrincipalDetails principalDetails){
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+
         User user = principal.getUser();
         System.out.println(user);
         //user, user1은 같은 유저
         User user1 = principalDetails.getUser();
         System.out.println(user1);
-
-        return user.toString();
+        return UserResponse.builder().user(user).build().toString();
     }
 
     @GetMapping("/oauth/loginInfo")
