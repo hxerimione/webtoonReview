@@ -7,6 +7,7 @@ import com.review.webtoon.repository.UserRepository;
 import com.review.webtoon.userinfo.KakaoUserInfo;
 import com.review.webtoon.userinfo.NaverUserInfo;
 import com.review.webtoon.userinfo.OAuth2UserInfo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -18,9 +19,10 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
-    @Autowired private UserRepository userRepository;
-    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -39,9 +41,10 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         String uuid = UUID.randomUUID().toString().substring(0,6);
         String password = bCryptPasswordEncoder.encode("패스워드"+uuid);
 
-        String email = oAuth2User.getAttribute("email");
+        //String email = oAuth2User.getAttribute("email");
+        String email = oAuth2UserInfo.getEmail();
         Role role = Role.ROLE_USER;
-
+        System.out.println(email);
         User byUsername = userRepository.findByUsername(username);
 
         if(userRepository.findByUsername(username) == null){

@@ -4,12 +4,12 @@ import com.review.webtoon.auth.PrincipalDetails;
 import com.review.webtoon.dto.*;
 import com.review.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired private UserRepository userRepository;
-    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/loginForm")
     public String loginForm(){
@@ -31,7 +32,15 @@ public class UserController {
         return "join";
     }
 
+    @GetMapping("/userReview")
+    public String userReview(Authentication authentication, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 
+        User user = principal.getUser();
+        System.out.println(user.getReviews());
+        model.addAttribute("userReview",user.getReviews());
+        return "userReview";
+    }
     @PostMapping("/join")
     public String join(@ModelAttribute UserJoin userRequest){
         userRequest.setRole(Role.ROLE_USER);

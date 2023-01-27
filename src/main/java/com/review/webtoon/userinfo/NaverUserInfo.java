@@ -13,7 +13,6 @@ public class NaverUserInfo implements OAuth2UserInfo{
 
     @Override
     public Map<String, Object> getAttributes() {
-
         return attributes;
     }
 

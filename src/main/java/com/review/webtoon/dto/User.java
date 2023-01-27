@@ -3,6 +3,8 @@ package com.review.webtoon.dto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @ToString
@@ -21,6 +23,9 @@ public class User extends BaseTimeEntity{
 
     private String provider; //oauth2를 이용할 경우 어떤 플랫폼을 이용할지 Ex naver,kakao
     private String providerId; //oauth2를 이용할 경우 아이디값
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    private List<Review> reviews = new ArrayList<>();
 
     @Builder
     public User(String username, String password, String email,Role role){

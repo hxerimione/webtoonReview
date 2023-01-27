@@ -23,10 +23,15 @@ public class Review extends BaseTimeEntity{
 
     private Long webtoonId;
     private String img;
-    //@ManyToOne(fetch=FetchType.LAZY)
-    //@JoinColumn(name = "webtoon_id")
-    //private Webtoon webtoon;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public void setUser() {
+        this.user = user;
+        user.getReviews().add(this);
+    }
     public Review(ReviewDto reviewDto){
         this.title = reviewDto.getTitle();
         this.content = reviewDto.getContent();
@@ -36,11 +41,12 @@ public class Review extends BaseTimeEntity{
         this.content = reviewDto.getContent();
     }
     @Builder
-    public Review(String title, String content, Long webtoonId,String img){
+    public Review(String title, String content, Long webtoonId,String img,User user){
         this.title = title;
         this.content = content;
         this.webtoonId = webtoonId;
         this.img = img;
+        this.user = user;
         //this.webtoon = webtoon;
     }
 }

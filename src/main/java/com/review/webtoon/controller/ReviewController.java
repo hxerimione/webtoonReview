@@ -1,9 +1,7 @@
 package com.review.webtoon.controller;
 
-import com.review.webtoon.dto.Pagination;
-import com.review.webtoon.dto.Review;
-import com.review.webtoon.dto.ReviewDto;
-import com.review.webtoon.dto.Webtoon;
+import com.review.webtoon.auth.PrincipalDetails;
+import com.review.webtoon.dto.*;
 import com.review.webtoon.service.ReviewService;
 import com.review.webtoon.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,12 +47,14 @@ public class ReviewController {
     }
     @GetMapping("/review/new")
     public String createReview(Model model){
-        model.addAttribute("form", new ReviewDto());
-        //webtoon list
+        model.addAttribute("form",new ReviewDto());
         return "review/createReview";
     }
     @PostMapping("/review/new")
-    public String createReview(@Valid ReviewDto dto){
+    public String createReview(@Valid ReviewDto dto, Authentication authentication, @AuthenticationPrincipal PrincipalDetails principalDetails){
+
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
         Webtoon webtoon=webtoonService.findWebtoonById(dto.getWebtoonId()).get();
         String img = webtoon.getImg();
         Review review = Review
@@ -61,8 +63,11 @@ public class ReviewController {
                 .content(dto.getContent())
                 .webtoonId(dto.getWebtoonId())
                 .img(img)
+                .user(user)
                 .build();
+        review.setUser();
         reviewService.saveReview(review);
+
         return "redirect:/review";
     }
     @GetMapping("/review/selectWebtoon")

@@ -17,6 +17,7 @@ public class UserJoin extends BaseTimeEntity{
         this.email = email;
         this.role = role;
     }
+
     public User toEntity(){
         return User.builder()
                 .username(username)
