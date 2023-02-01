@@ -13,20 +13,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
     private final WebtoonService webtoonService;
-    @GetMapping("/review")
+    @GetMapping("/")
     public String list(@PageableDefault(sort = {"title"},direction = Sort.Direction.ASC,size =12) Pageable pageable
                        ,@RequestParam(defaultValue = "1") int page,Model model){
         Page<Review> reviews= reviewService.findWebtoons(pageable.getPageNumber(), pageable.getPageSize());
@@ -46,12 +44,18 @@ public class ReviewController {
         return "review/view";
     }
     @GetMapping("/review/new")
-    public String createReview(Model model){
+    public String createReview(Model model,Authentication authentication, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        if (authentication == null){
+            MessageDto message = new MessageDto("로그인을 한 사용자만 이용할 수 있습니다.", "/loginForm", RequestMethod.GET, null);
+            model.addAttribute("params",message);
+            return "messageRedirect";
+        }
         model.addAttribute("form",new ReviewDto());
         return "review/createReview";
     }
+    //
     @PostMapping("/review/new")
-    public String createReview(@Valid ReviewDto dto, Authentication authentication, @AuthenticationPrincipal PrincipalDetails principalDetails){
+    public String createReview(@Valid ReviewDto dto, Authentication authentication,@AuthenticationPrincipal PrincipalDetails principalDetails){
 
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
@@ -68,7 +72,7 @@ public class ReviewController {
         review.setUser();
         reviewService.saveReview(review);
 
-        return "redirect:/review";
+        return "redirect:/";
     }
     @GetMapping("/review/selectWebtoon")
     public String selectWebtoon(@RequestParam(required = false) String keyword,
@@ -83,9 +87,25 @@ public class ReviewController {
             return "review/selectWebtoon";
         }
     }
+    //수정
     @GetMapping("/update/{id}")
-    public String update(@PathVariable Long id, Model model){
+    public String update(Authentication authentication,@PathVariable Long id, Model model){
+
+        if (authentication == null){
+            MessageDto message = new MessageDto("로그인을 한 사용자만 이용할 수 있습니다.", "/loginForm", RequestMethod.GET, null);
+            model.addAttribute("params",message);
+            return "messageRedirect";
+        }
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+
+        User user = principal.getUser();
+
         Review review = reviewService.findById(id).get();
+        if (user.getId() != review.getUser().getId()){
+            MessageDto message = new MessageDto("본인이 작성한 글만 수정할 수 있습니다..", "/", RequestMethod.GET, null);
+            model.addAttribute("params",message);
+            return "messageRedirect";
+        }
 
         model.addAttribute(review);
         return "review/updateReview";
@@ -97,12 +117,26 @@ public class ReviewController {
         Review review = reviewService.findById(id).get();
         review.update(form);
         reviewService.saveReview(review);
-        return "redirect:/review";
+        return "redirect:/";
     }
     @DeleteMapping("/review/{id}")
-    public String delete(@PathVariable Long id){
+    public String delete(Authentication authentication,@PathVariable Long id,Model model){
+        if (authentication == null){
+            MessageDto message = new MessageDto("로그인을 한 사용자만 이용할 수 있습니다.", "/loginForm", RequestMethod.GET, null);
+            model.addAttribute("params",message);
+            return "messageRedirect";
+        }
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+
+        User user = principal.getUser();
         Review review = reviewService.findById(id).get();
+        if (user.getId() != review.getUser().getId()){
+            MessageDto message = new MessageDto("본인이 작성한 글만 삭제할 수 있습니다..", "/", RequestMethod.GET, null);
+            model.addAttribute("params",message);
+            return "messageRedirect";
+        }
+
         reviewService.deleteById(id);
-        return "redirect:/review";
+        return "redirect:/";
     }
 }

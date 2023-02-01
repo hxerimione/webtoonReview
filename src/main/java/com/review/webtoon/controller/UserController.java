@@ -10,10 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -33,10 +30,17 @@ public class UserController {
     }
 
     @GetMapping("/userReview")
-    public String userReview(Authentication authentication, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+    public String userReview( @AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
 
-        User user = principal.getUser();
+        if (principalDetails == null){
+            MessageDto message = new MessageDto("로그인을 한 사용자만 이용할 수 있습니다.", "/loginForm", RequestMethod.GET, null);
+            model.addAttribute("params",message);
+            return "messageRedirect";
+        }
+        //PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+
+        //User user = principal.getUser();
+        User user = principalDetails.getUser();
         System.out.println(user.getReviews());
         model.addAttribute("userReview",user.getReviews());
         return "userReview";
