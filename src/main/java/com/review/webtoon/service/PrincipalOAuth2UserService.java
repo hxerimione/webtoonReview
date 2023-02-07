@@ -8,7 +8,6 @@ import com.review.webtoon.userinfo.KakaoUserInfo;
 import com.review.webtoon.userinfo.NaverUserInfo;
 import com.review.webtoon.userinfo.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

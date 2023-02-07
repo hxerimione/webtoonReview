@@ -13,5 +13,4 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     Review save(Review review);
     Page<Review> findAll(Pageable pageable);
     void deleteById(Long id);
-
 }

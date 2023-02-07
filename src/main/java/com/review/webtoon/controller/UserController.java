@@ -2,6 +2,7 @@ package com.review.webtoon.controller;
 
 import com.review.webtoon.auth.PrincipalDetails;
 import com.review.webtoon.dto.*;
+import com.review.webtoon.repository.ReviewRepository;
 import com.review.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -12,14 +13,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
 public class UserController {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
+    private final ReviewRepository reviewRepository;
     @GetMapping("/loginForm")
     public String loginForm(){
         return "login";
@@ -30,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/userReview")
-    public String userReview( @AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
+    public String userReview(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
 
         if (principalDetails == null){
             MessageDto message = new MessageDto("로그인을 한 사용자만 이용할 수 있습니다.", "/loginForm", RequestMethod.GET, null);
@@ -40,19 +43,19 @@ public class UserController {
         //PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 
         //User user = principal.getUser();
-        User user = principalDetails.getUser();
-        System.out.println(user.getReviews());
-        model.addAttribute("userReview",user.getReviews());
+        String username = principalDetails.getUsername();
+        User byUsernameWithReviews = userRepository.findByUsernameWithReviews(username);
+        model.addAttribute("userReview",byUsernameWithReviews.getReviews());
         return "userReview";
     }
     @PostMapping("/join")
-    public String join(@ModelAttribute UserJoin userRequest){
-        userRequest.setRole(Role.ROLE_USER);
+    public String join(@ModelAttribute UserJoin userJoin){
+        userJoin.setRole(Role.ROLE_USER);
         //비밀번호 암호화
-        String encodePwd = bCryptPasswordEncoder.encode(userRequest.getPassword());
-        userRequest.setPassword(encodePwd);
+        String encodePwd = bCryptPasswordEncoder.encode(userJoin.getPassword());
+        userJoin.setPassword(encodePwd);
         //DTO to Entity
-        userRepository.save(userRequest.toEntity());
+        userRepository.save(userJoin.toEntity());
         return "redirect:/loginForm";
     }
     @GetMapping("/user")

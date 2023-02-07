@@ -60,5 +60,20 @@ public class HubController {
         return "naverhub";
     }
 
+    @GetMapping("/hub/kakao")
+    public String findWebtoonByKakao(@PageableDefault(sort = {"title"},direction = Sort.Direction.ASC,size=12) Pageable pageable,
+                                     @RequestParam(defaultValue = "1") int page,
+                                     Model model){
+        Page<Webtoon> webtoons = webtoonService.findWebtoonByPlatform(pageable.getPageNumber(), pageable.getPageSize(),"카카오 페이지");
+        List<Webtoon> webtoonList = new ArrayList<Webtoon>();
+        Pagination pagination = new Pagination(webtoons.getTotalPages(),page);
+        System.out.println(webtoons);
+        if(webtoons.hasContent()){
+            webtoonList = webtoons.getContent();
+        }
+        model.addAttribute("webtoons",webtoonList);
+        model.addAttribute("pagination",pagination);
+        return "kakaohub";
+    }
 
 }

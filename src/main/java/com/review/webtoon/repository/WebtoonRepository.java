@@ -17,4 +17,5 @@ public interface WebtoonRepository extends MongoRepository<Webtoon,Long> {
     Page<Webtoon> findAll(Pageable pageable);
     List<Webtoon> findBySearchKeywordLike(String keyword);
     Optional<Webtoon> findById(Long id);
+
 }

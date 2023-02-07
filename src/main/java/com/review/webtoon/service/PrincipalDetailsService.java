@@ -22,6 +22,7 @@ public class PrincipalDetailsService implements UserDetailsService {
         if(byUsername!=null){
             return new PrincipalDetails(byUsername);
         }
+        System.out.println("hello");
         return null;
     }
 }
