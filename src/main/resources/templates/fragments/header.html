@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:fragment="header" >
     <!-- Required meta tags -->
@@ -14,6 +14,13 @@
             <ul>
                 <a href="/review">리뷰</a>
                 <a href="/hub">전체 웹툰</a>
+                <div sec:authorize="isAnonymous()">
+                    <a href="/loginForm">로그인</a>
+                </div>
+                <div sec:authorize="isAuthenticated()">
+                    <a href="/logout">로그아웃</a>
+                    <p sec:authentication="name"></p>
+                </div>
             </ul>
         </nav>
     </center>

@@ -10,17 +10,12 @@
                 <thead>
                 <tr>
                     <th style="width: 5%">#</th>
-                    <th style="width: 50%">제목</th>
-                    <th style="width: 30%">작성시간</th>
-                    <th style="width: 15%">작성자</th>
+                    <th style="width: 50%">좋아요 누른 리뷰</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="ur ,i: ${userReview}" >
-                    <td th:text="${i.count}"></td>
-                    <td><a th:href="@{/review/{id}(id=${ur.id})}" th:text="${ur.title}">title</a></td>
-                    <td th:text="${ur.createdDate}"></td>
-                    <td th:text="${ur.user.username}"></td>
+                <tr th:each="h ,i: ${hearts}" >
+                    <td th:text="${h.review}"></td>
                 </tr>
                 </tbody>
             </table>

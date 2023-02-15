@@ -2,6 +2,7 @@ package com.review.webtoon.controller;
 
 import com.review.webtoon.auth.PrincipalDetails;
 import com.review.webtoon.dto.*;
+import com.review.webtoon.service.HeartService;
 import com.review.webtoon.service.ReviewService;
 import com.review.webtoon.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
     private final WebtoonService webtoonService;
+    private final HeartService heartService;
     @GetMapping("/")
     public String list(@PageableDefault(sort = {"title"},direction = Sort.Direction.ASC,size =12) Pageable pageable
                        ,@RequestParam(defaultValue = "1") int page,Model model){
@@ -38,9 +40,19 @@ public class ReviewController {
         return "review/reviews";
     }
     @GetMapping("/review/{id}")
-    public String read(@PathVariable Long id, Model model){
+    public String read(@PathVariable Long id, Model model,Authentication authentication){
+        boolean heart = false;
+        if (authentication != null){
+            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+            User user = principal.getUser();
+            if (!(heartService.isNotAlreadyLike(user,reviewService.findById(id).get()))){
+                heart = true;
+            }
+        }
         Review review = reviewService.findById(id).get();
         model.addAttribute("review",review);
+        model.addAttribute("heart",heart);
+
         return "review/view";
     }
     @GetMapping("/review/new")

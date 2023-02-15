@@ -27,6 +27,8 @@ public class User extends BaseTimeEntity{
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Heart> hearts = new ArrayList<>();
     @Builder
     public User(String username, String password, String email,Role role){
         this.username = username;

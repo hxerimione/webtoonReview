@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="ko"
       xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/header :: header" />
 <style>
 header {
@@ -84,15 +84,102 @@ ul a {
 </style>
 <body>
 <div class="container">
+    <script src="//code.jquery.com/jquery.min.js"></script>
+        <script th:inline="javascript">
+    /** 로그인하지 않은 유저가 좋아요 누를 때 **/
+    function notLogin(){
+         alert("로그인 후 이용할 수 있습니다.");
+    }
+
+    const clickLike = "좋아요 취소";
+    const emptyLike = "좋아요";
+
+    /** 좋아요 유무에 따라 글씨 다르게 보여줌 **/
+    //브라우저가 웹 문서를 읽기 시작하고 DOM이 생성되면 실행되는 메소드
+    $(function(){
+
+        // 현재 로그인한 유저가 해당 게시물을 좋아요 했다면 likeVal = true,
+  		// 좋아요하지 않았다면 false
+        let likeVal = $('#likeCheck').val(); // 데이터가 있으면 true
+        const likeButton = $('#likeButton');
+
+        console.log("likeVal : " + likeVal);
+
+        if(likeVal === 'true'){
+            // 이미 눌러져있으면 화면에 좋아요 취소라고 뜸
+            $('#likeButton').html(clickLike);
+        } else if(likeVal === 'false'){
+            // 안누른상태라면 화면에 좋아요라고 뜸
+            $('#likeButton').html(emptyLike);
+        }
+    });
+
+
+    /** 좋아요 클릭 시 실행 **/
+    function clickHeart(){
+        const reviewId = $('#reviewId').val();
+        const likeVal = $('#likeCheck').val();
+
+        console.log(likeVal);
+        if (likeVal === 'true') {
+            const con_check = confirm("현재 게시물 추천을 취소하시겠습니까?")
+            if (con_check) {
+                console.log("추천 취소 진입");
+                $.ajax({
+                    type: 'POST',
+                    url: '/review/heart/' + reviewId,
+                    contentType: 'application/json; charset=utf-8'
+                }).done(function () {
+                    $('#likeButton').html(emptyLike);
+                    location.reload();
+                }).fail(function (error) {
+                    alert(JSON.stringify(error));
+                })
+            }
+        } else if(likeVal === 'false'){
+            const con_check = confirm("현재 게시물을 추천하시겠습니까?");
+            if (con_check) {
+                console.log("추천 진입");
+                $.ajax({
+                    type: 'POST',
+                    url: '/review/heart/' + reviewId,
+                    contentType: 'application/json; charset=utf-8'
+                }).done(function () {
+                    $('#likeButton').html(clickLike);
+                    location.reload();
+                }).fail(function (error) {
+                    alert(JSON.stringify(error));
+                })
+            }
+        }
+    }
+    </script>
     <div th:text="${review.title}">title</div>
     <div th:text="${review.content}">content</div>
     <div th:text="${review.createdDate}">createdDate</div>
     <div th:text="${review.modifiedDate}">modifiedDate</div>
+
+    <input type="hidden" id = "reviewId" th:value="${review.id}">
+    <div sec:authorize-expr="isAuthenticated()">
+        <!-- 좋아요 -->
+        <input type="hidden" id="likeCheck" th:value="${heart}">
+        <button th:id="likeButton" onclick="clickHeart()">좋아요</button>
+        <span th:text="${#lists.size(review.hearts)}"></span>
+    </div>
+    <div sec:authorize-expr="!isAuthenticated()">
+        <!-- 로그인하지 않은 유저라면 -->
+        <button th:id="loginCheck" onclick="notLogin()">좋아요</button>
+        <span th:text="${#lists.size(review.hearts)}"></span>
+    </div>
+
     <a type="button" th:href="@{/update/{id}(id=${review.id})}">수정</a>
     <form th:action="@{/review/{id}(id=${review.id})}" method="post">
+
         <input type="hidden" name="_method" value="delete">
         <button id="delete-btn">삭제</button>
     </form>
+
 </div>
 </body>
 </html>
+
