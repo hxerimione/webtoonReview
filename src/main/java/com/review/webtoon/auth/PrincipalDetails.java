@@ -1,6 +1,6 @@
 package com.review.webtoon.auth;
 
-import com.review.webtoon.dto.User;
+import com.review.webtoon.entity.User;
 import com.review.webtoon.userinfo.OAuth2UserInfo;
 import lombok.Getter;
 import lombok.ToString;

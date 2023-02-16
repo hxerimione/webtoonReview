@@ -1,10 +1,9 @@
 package com.review.webtoon.service;
 
 import com.review.webtoon.auth.PrincipalDetails;
-import com.review.webtoon.dto.User;
+import com.review.webtoon.entity.User;
 import com.review.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

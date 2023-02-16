@@ -1,15 +1,9 @@
-package com.review.webtoon.dto;
+package com.review.webtoon.entity;
 
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Document(collection = "myCol")

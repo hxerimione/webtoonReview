@@ -1,5 +1,6 @@
-package com.review.webtoon.dto;
+package com.review.webtoon.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class Review extends BaseTimeEntity{
     private Long webtoonId;
     private String img;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

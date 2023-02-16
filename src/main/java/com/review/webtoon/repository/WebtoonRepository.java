@@ -1,6 +1,6 @@
 package com.review.webtoon.repository;
 
-import com.review.webtoon.dto.Webtoon;
+import com.review.webtoon.entity.Webtoon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;

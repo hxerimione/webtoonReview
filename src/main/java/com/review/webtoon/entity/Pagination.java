@@ -1,4 +1,4 @@
-package com.review.webtoon.dto;
+package com.review.webtoon.entity;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
 package com.review.webtoon.controller;
 
 import com.review.webtoon.auth.PrincipalDetails;
-import com.review.webtoon.dto.*;
+import com.review.webtoon.entity.*;
 import com.review.webtoon.repository.ReviewRepository;
 import com.review.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor

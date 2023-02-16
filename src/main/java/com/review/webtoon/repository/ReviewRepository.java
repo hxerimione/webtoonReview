@@ -1,9 +1,10 @@
 package com.review.webtoon.repository;
 
-import com.review.webtoon.dto.Review;
+import com.review.webtoon.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +16,7 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     Review save(Review review);
     Page<Review> findAll(Pageable pageable);
     void deleteById(Long id);
+    @Query(value = "select r from Review r join fetch r.user"
+    ,countQuery = "select count(r) from Review r")
+    Page<Review> findAllLikeFetchJoin(Pageable pageable);
 }

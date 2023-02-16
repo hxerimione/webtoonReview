@@ -1,8 +1,8 @@
 package com.review.webtoon;
 
-import com.review.webtoon.dto.Heart;
-import com.review.webtoon.dto.Review;
-import com.review.webtoon.dto.User;
+import com.review.webtoon.entity.Heart;
+import com.review.webtoon.entity.Review;
+import com.review.webtoon.entity.User;
 import com.review.webtoon.repository.HeartRepository;
 import com.review.webtoon.repository.ReviewRepository;
 import com.review.webtoon.repository.UserRepository;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-import static com.review.webtoon.dto.Role.ROLE_USER;
+import static com.review.webtoon.entity.Role.ROLE_USER;
 
 @Component
 @RequiredArgsConstructor

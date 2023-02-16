@@ -1,8 +1,8 @@
 package com.review.webtoon.repository;
 
-import com.review.webtoon.dto.Heart;
-import com.review.webtoon.dto.Review;
-import com.review.webtoon.dto.User;
+import com.review.webtoon.entity.Heart;
+import com.review.webtoon.entity.Review;
+import com.review.webtoon.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

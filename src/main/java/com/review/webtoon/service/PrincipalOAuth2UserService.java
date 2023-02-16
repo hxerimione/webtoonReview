@@ -1,8 +1,8 @@
 package com.review.webtoon.service;
 
 import com.review.webtoon.auth.PrincipalDetails;
-import com.review.webtoon.dto.Role;
-import com.review.webtoon.dto.User;
+import com.review.webtoon.entity.Role;
+import com.review.webtoon.entity.User;
 import com.review.webtoon.repository.UserRepository;
 import com.review.webtoon.userinfo.KakaoUserInfo;
 import com.review.webtoon.userinfo.NaverUserInfo;

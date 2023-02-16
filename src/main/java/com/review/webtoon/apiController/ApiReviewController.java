@@ -1,4 +1,4 @@
-package com.review.webtoon.controller;
+package com.review.webtoon.apiController;
 
 import com.review.webtoon.auth.PrincipalDetails;
 import com.review.webtoon.entity.*;
@@ -12,35 +12,32 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Controller
+@RestController
+@RequestMapping("api")
 @RequiredArgsConstructor
-public class ReviewController {
+public class ApiReviewController {
     private final ReviewService reviewService;
     private final WebtoonService webtoonService;
     private final HeartService heartService;
-    @GetMapping("/")
-    public String list(@PageableDefault(sort = {"title"},direction = Sort.Direction.ASC,size =12) Pageable pageable
-                       ,@RequestParam(defaultValue = "1") int page,Model model){
-        Page<Review> reviews= reviewService.findReviews(pageable.getPageNumber(), pageable.getPageSize());
-        List<Review> reviewList = new ArrayList<Review>();
-        if(reviews.hasContent()){
-            reviewList = reviews.getContent();
-        }
-        Pagination pagination = new Pagination(reviews.getTotalPages(),page);
-        model.addAttribute("reviews",reviewList);
-        model.addAttribute("pagination",pagination);
-        return "review/reviews";
+    @GetMapping("/review")
+    public List<ReviewDto> list(@PageableDefault(sort = {"title"},direction = Sort.Direction.ASC,size =12) Pageable pageable){
+
+        Page<Review> reviews = reviewService.findReviews(pageable.getPageNumber(), pageable.getPageSize());
+        List<ReviewDto> reviewDtos = reviews.stream()
+                .map(o->new ReviewDto(o))
+                .collect(Collectors.toList());
+        return reviewDtos;
     }
     @GetMapping("/review/{id}")
-    public String read(@PathVariable Long id, Model model,Authentication authentication){
+    public String read(@PathVariable Long id, Model model, Authentication authentication){
         boolean heart = false;
         if (authentication != null){
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
@@ -67,7 +64,7 @@ public class ReviewController {
     }
     //
     @PostMapping("/review/new")
-    public String createReview(@Valid ReviewDto dto, Authentication authentication,@AuthenticationPrincipal PrincipalDetails principalDetails){
+    public String createReview(@Valid ReviewDto dto, Authentication authentication, @AuthenticationPrincipal PrincipalDetails principalDetails){
 
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
@@ -152,3 +149,4 @@ public class ReviewController {
         return "redirect:/";
     }
 }
+

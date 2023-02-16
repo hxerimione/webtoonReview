@@ -1,7 +1,6 @@
 package com.review.webtoon.service;
 
-import com.review.webtoon.dto.Review;
-import com.review.webtoon.dto.Webtoon;
+import com.review.webtoon.entity.Webtoon;
 import com.review.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

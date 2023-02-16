@@ -1,7 +1,7 @@
 package com.review.webtoon.controller;
 
-import com.review.webtoon.dto.Pagination;
-import com.review.webtoon.dto.Webtoon;
+import com.review.webtoon.entity.Pagination;
+import com.review.webtoon.entity.Webtoon;
 import com.review.webtoon.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,8 @@
-package com.review.webtoon.controller;
+package com.review.webtoon.apiController;
 
-import com.review.webtoon.dto.Webtoon;
+import com.review.webtoon.entity.Webtoon;
 import com.review.webtoon.service.WebtoonService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApiController {
     private final WebtoonService service;
-    @GetMapping("/hello2")
-    public String indexController(){
-        return "hello";
-    }
+
+
     @GetMapping("/api")
     public Page<Webtoon> findWebtoon(@PageableDefault(sort = {"_id"},direction = Sort.Direction.ASC,size =9) Pageable pageable,
                                      @RequestParam(required = false) String platform,
