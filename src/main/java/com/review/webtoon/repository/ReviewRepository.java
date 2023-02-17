@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,7 +17,10 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     Review save(Review review);
     Page<Review> findAll(Pageable pageable);
     void deleteById(Long id);
-    @Query(value = "select r from Review r join fetch r.user"
-    ,countQuery = "select count(r) from Review r")
-    Page<Review> findAllLikeFetchJoin(Pageable pageable);
+    @Query(value = "select distinct r from Review r " +
+            "join fetch r.user " +
+            "left join fetch r.hearts " +
+            "where r.id = :id")
+    Optional<Review> findByIdUsingFetchJoin(@Param("id") Long id);
+
 }

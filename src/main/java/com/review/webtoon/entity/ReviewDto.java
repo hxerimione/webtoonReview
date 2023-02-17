@@ -10,28 +10,26 @@ import java.util.List;
 
 @Getter @Setter
 public class ReviewDto extends BaseTimeEntity{
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
     private String title;
     private String content;
     private Long webtoonId;
-
-    private String author;
+    private String username;
+    private int hearts;
     private String img;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
-    private List<Heart> hearts;
     public ReviewDto(){
 
     }
     public ReviewDto(Review review){
+        this.createdDate = review.getCreatedDate();
+        this.modifiedDate = review.getModifiedDate();
         this.title = review.getTitle();
         this.content = review.getContent();
         this.webtoonId = review.getWebtoonId();
-        this.author = review.getUser().getUsername();
         this.img = review.getImg();
-        this.createdDate = review.getCreatedDate();
-        this.modifiedDate = review.getModifiedDate();
-        this.hearts = review.getHearts();
-
+        this.hearts = review.getHearts().size();
+        this.username = review.getUser().getUsername();
     }
     @Builder
     public ReviewDto(String title, String content, Long webtoonId){

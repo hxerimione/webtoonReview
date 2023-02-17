@@ -27,7 +27,6 @@ public class Review extends BaseTimeEntity{
     private Long webtoonId;
     private String img;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -52,6 +51,7 @@ public class Review extends BaseTimeEntity{
         this.title = reviewDto.getTitle();
         this.content = reviewDto.getContent();
     }
+
     @Builder
     public Review(String title, String content, Long webtoonId,String img,User user){
         this.title = title;

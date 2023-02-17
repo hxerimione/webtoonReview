@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,8 +17,8 @@ import java.util.Optional;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
 
-    public Review saveReview(Review review){
-        return reviewRepository.save(review);
+    public Long saveReview(Review review){
+        return reviewRepository.save(review).getId();
     }
     public Page<Review> findReviews(int page, int size){
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -26,9 +27,14 @@ public class ReviewService {
     public Optional<Review> findById(Long id){
         return reviewRepository.findById(id);
     }
-    public void deleteById(Long id){ reviewRepository.deleteById(id);}
-    public Page<Review> findReviewWithUser(int page, int size){
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return reviewRepository.findAllLikeFetchJoin(pageRequest);
+    public Long deleteById(Long id){
+        reviewRepository.deleteById(id);
+
+        return id;
     }
+    public Optional<Review> findByIdUsingFetchJoin(Long id){
+        System.out.println("findbyIdUsingFetchJoin");
+        return reviewRepository.findByIdUsingFetchJoin(id);
+    }
+
 }

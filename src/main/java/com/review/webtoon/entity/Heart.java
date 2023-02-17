@@ -19,7 +19,6 @@ public class Heart {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "review_id")
     private Review review;

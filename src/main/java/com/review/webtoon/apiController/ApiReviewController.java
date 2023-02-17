@@ -5,11 +5,14 @@ import com.review.webtoon.entity.*;
 import com.review.webtoon.service.HeartService;
 import com.review.webtoon.service.ReviewService;
 import com.review.webtoon.service.WebtoonService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
@@ -28,60 +31,59 @@ public class ApiReviewController {
     private final WebtoonService webtoonService;
     private final HeartService heartService;
     @GetMapping("/review")
-    public List<ReviewDto> list(@PageableDefault(sort = {"title"},direction = Sort.Direction.ASC,size =12) Pageable pageable){
-
+    public List<ReviewResponse> list(@PageableDefault(sort = {"title"},direction = Sort.Direction.ASC,size =12) Pageable pageable){
         Page<Review> reviews = reviewService.findReviews(pageable.getPageNumber(), pageable.getPageSize());
-        List<ReviewDto> reviewDtos = reviews.stream()
-                .map(o->new ReviewDto(o))
+        List<ReviewResponse> result = reviews.stream()
+                .map(o->new ReviewResponse(o))
                 .collect(Collectors.toList());
-        return reviewDtos;
+        return result;
+    }
+
+    @Data
+    static class ReviewResponse{
+        private String title;
+        private String content;
+        private String img;
+        public ReviewResponse(Review review){
+            this.content = review.getContent();
+            this.title = review.getTitle();
+            this.img = review.getImg();
+        }
     }
     @GetMapping("/review/{id}")
-    public String read(@PathVariable Long id, Model model, Authentication authentication){
-        boolean heart = false;
-        if (authentication != null){
-            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-            User user = principal.getUser();
-            if (!(heartService.isNotAlreadyLike(user,reviewService.findById(id).get()))){
-                heart = true;
-            }
-        }
-        Review review = reviewService.findById(id).get();
-        model.addAttribute("review",review);
-        model.addAttribute("heart",heart);
+    public ReviewDto read(@PathVariable Long id){
+        Review review = reviewService.findByIdUsingFetchJoin(id).get();
+        ReviewDto result = new ReviewDto(review);
+        return result;
+    }
 
-        return "review/view";
-    }
-    @GetMapping("/review/new")
-    public String createReview(Model model,Authentication authentication, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        if (authentication == null){
-            MessageDto message = new MessageDto("로그인을 한 사용자만 이용할 수 있습니다.", "/loginForm", RequestMethod.GET, null);
-            model.addAttribute("params",message);
-            return "messageRedirect";
-        }
-        model.addAttribute("form",new ReviewDto());
-        return "review/createReview";
-    }
-    //
     @PostMapping("/review/new")
-    public String createReview(@Valid ReviewDto dto, Authentication authentication, @AuthenticationPrincipal PrincipalDetails principalDetails){
-
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User user = principal.getUser();
-        Webtoon webtoon=webtoonService.findWebtoonById(dto.getWebtoonId()).get();
+    public CreateReviewResponse createReview(@RequestBody @Valid CreateReviewRequest request){
+        Webtoon webtoon=webtoonService.findWebtoonById(request.webtoonId).get();
         String img = webtoon.getImg();
-        Review review = Review
-                .builder()
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .webtoonId(dto.getWebtoonId())
+        Review review = Review.builder()
+                .title(request.title)
+                .content(request.content)
+                .webtoonId(request.webtoonId)
                 .img(img)
-                .user(user)
                 .build();
-        review.setUser();
-        reviewService.saveReview(review);
 
-        return "redirect:/";
+        Long id = reviewService.saveReview(review);
+        return new CreateReviewResponse(id);
+    }
+    @Data
+    static class CreateReviewRequest{
+        private String title;
+        private String content;
+        private Long webtoonId;
+
+    }
+    @Data
+    static class CreateReviewResponse{
+        private Long id;
+        public CreateReviewResponse(Long id){
+            this.id = id;
+        }
     }
     @GetMapping("/review/selectWebtoon")
     public String selectWebtoon(@RequestParam(required = false) String keyword,
@@ -97,56 +99,37 @@ public class ApiReviewController {
         }
     }
     //수정
-    @GetMapping("/update/{id}")
-    public String update(Authentication authentication,@PathVariable Long id, Model model){
 
-        if (authentication == null){
-            MessageDto message = new MessageDto("로그인을 한 사용자만 이용할 수 있습니다.", "/loginForm", RequestMethod.GET, null);
-            model.addAttribute("params",message);
-            return "messageRedirect";
-        }
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-
-        User user = principal.getUser();
+    @PutMapping("/review/{id}")
+    public UpdateReviewResponse update(@PathVariable Long id,@RequestBody @Valid UpdateReviewRequest request){
 
         Review review = reviewService.findById(id).get();
-        if (user.getId() != review.getUser().getId()){
-            MessageDto message = new MessageDto("본인이 작성한 글만 수정할 수 있습니다..", "/", RequestMethod.GET, null);
-            model.addAttribute("params",message);
-            return "messageRedirect";
-        }
-
-        model.addAttribute(review);
-        return "review/updateReview";
-
+        ReviewDto reviewDto = ReviewDto.builder().title(request.title).content(request.content).build();
+        review.update(reviewDto);
+        Long updateId = reviewService.saveReview(review);
+        return new UpdateReviewResponse(updateId);
     }
-    @PutMapping("/update/{id}")
-    public String update(@PathVariable Long id,@Valid ReviewDto form){
-        System.out.println("happy");
-        Review review = reviewService.findById(id).get();
-        review.update(form);
-        reviewService.saveReview(review);
-        return "redirect:/";
+    @Data
+    static class UpdateReviewRequest{
+        private String title;
+        private String content;
+    }
+
+    @Data
+    static class UpdateReviewResponse{
+        private Long id;
+        public UpdateReviewResponse(Long id){
+            this.id = id;
+        }
     }
     @DeleteMapping("/review/{id}")
-    public String delete(Authentication authentication,@PathVariable Long id,Model model){
-        if (authentication == null){
-            MessageDto message = new MessageDto("로그인을 한 사용자만 이용할 수 있습니다.", "/loginForm", RequestMethod.GET, null);
-            model.addAttribute("params",message);
-            return "messageRedirect";
-        }
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+    public ResponseEntity delete(@PathVariable Long id){
 
-        User user = principal.getUser();
         Review review = reviewService.findById(id).get();
-        if (user.getId() != review.getUser().getId()){
-            MessageDto message = new MessageDto("본인이 작성한 글만 삭제할 수 있습니다..", "/", RequestMethod.GET, null);
-            model.addAttribute("params",message);
-            return "messageRedirect";
-        }
 
         reviewService.deleteById(id);
-        return "redirect:/";
+        return new ResponseEntity(HttpStatus.OK);
     }
+
 }
 

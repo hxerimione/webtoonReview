@@ -67,7 +67,7 @@ public class ReviewController {
     }
     //
     @PostMapping("/review/new")
-    public String createReview(@Valid ReviewDto dto, Authentication authentication,@AuthenticationPrincipal PrincipalDetails principalDetails){
+    public String createReview(@Valid ReviewDto dto, Authentication authentication){
 
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
@@ -81,7 +81,6 @@ public class ReviewController {
                 .img(img)
                 .user(user)
                 .build();
-        review.setUser();
         reviewService.saveReview(review);
 
         return "redirect:/";
