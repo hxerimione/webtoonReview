@@ -2,11 +2,17 @@ package com.review.webtoon.entity;
 
 import lombok.*;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
 @Getter @Setter
 @NoArgsConstructor
 public class UserJoin extends BaseTimeEntity{
+    @NotNull
     private String username;
+    @NotNull
     private String password;
+    @Email
     private String email;
     private Role role;
 

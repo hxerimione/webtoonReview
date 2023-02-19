@@ -44,10 +44,12 @@ public class ApiReviewController {
         private String title;
         private String content;
         private String img;
+        private String username;
         public ReviewResponse(Review review){
             this.content = review.getContent();
             this.title = review.getTitle();
             this.img = review.getImg();
+            this.username = review.getUser().getUsername();
         }
     }
     @GetMapping("/review/{id}")

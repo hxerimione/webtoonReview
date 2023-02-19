@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review,Long> {
     Optional<Review> findById(Long id);
     Review save(Review review);
+    @Query(value = "select distinct r from Review r " +
+            "join fetch r.user ",countQuery = "select count(r) from Review ")
     Page<Review> findAll(Pageable pageable);
     void deleteById(Long id);
     @Query(value = "select distinct r from Review r " +
