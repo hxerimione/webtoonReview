@@ -1,6 +1,6 @@
 package com.review.webtoon.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mongodb.lang.Nullable;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.List;
 public class Review extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_id")
+    @Column
     private Long id;
 
     @Column(length=50, nullable = false)
@@ -29,19 +29,20 @@ public class Review extends BaseTimeEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Member member;
 
+    @Nullable
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Heart> hearts = new ArrayList<>();
 
 
     public Long getUserId(){
-        return user.getId();
+        return member.getId();
     }
 
-    public void setUser() {
-        this.user = user;
-        user.getReviews().add(this);
+    public void setMember() {
+        this.member = member;
+        member.getReviews().add(this);
     }
     public Review(ReviewDto reviewDto){
         this.title = reviewDto.getTitle();
@@ -53,12 +54,11 @@ public class Review extends BaseTimeEntity{
     }
 
     @Builder
-    public Review(String title, String content, Long webtoonId,String img,User user){
+    public Review(String title, String content, Long webtoonId, String img, Member member){
         this.title = title;
         this.content = content;
         this.webtoonId = webtoonId;
         this.img = img;
-        this.user = user;
-        //this.webtoon = webtoon;
+        this.member = member;
     }
 }

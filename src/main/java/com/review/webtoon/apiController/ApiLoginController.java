@@ -1,9 +1,9 @@
 package com.review.webtoon.apiController;
 
 import com.review.webtoon.entity.Role;
-import com.review.webtoon.entity.UserJoin;
-import com.review.webtoon.repository.UserRepository;
-import com.review.webtoon.service.UserService;
+import com.review.webtoon.entity.MemberJoin;
+import com.review.webtoon.repository.MemberRepository;
+import com.review.webtoon.service.MemberService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,8 +15,8 @@ import javax.validation.Valid;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class ApiLoginController {
-    private final UserRepository userRepository;
-    private final UserService userService;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Data
@@ -27,11 +27,11 @@ public class ApiLoginController {
         }
     }
     @PostMapping("/join")
-    public JoinResponse join(@RequestBody @Valid UserJoin userJoin){
-        userJoin.setRole(Role.ROLE_USER);
-        String encodePwd = bCryptPasswordEncoder.encode(userJoin.getPassword());
-        userJoin.setPassword(encodePwd);
-        Long id = userService.saveUser(userJoin.toEntity());
+    public JoinResponse join(@RequestBody @Valid MemberJoin memberJoin){
+        memberJoin.setRole(Role.ROLE_USER);
+        String encodePwd = bCryptPasswordEncoder.encode(memberJoin.getPassword());
+        memberJoin.setPassword(encodePwd);
+        Long id = memberService.saveUser(memberJoin.toEntity());
         return new JoinResponse(id);
     }
 

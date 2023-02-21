@@ -26,10 +26,23 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final WebtoonService webtoonService;
     private final HeartService heartService;
-    @GetMapping("/")
+    @GetMapping("/review")
     public String list(@PageableDefault(sort = {"title"},direction = Sort.Direction.ASC,size =12) Pageable pageable
-                       ,@RequestParam(defaultValue = "1") int page,Model model){
-        Page<Review> reviews= reviewService.findReviews(pageable.getPageNumber(), pageable.getPageSize());
+                       ,@RequestParam(defaultValue = "1") int page,Model model,
+                       @RequestParam(value = "order",required = false)String order){
+        Page<Review> reviews;
+        if (order== null){
+            reviews = reviewService.findReviews(pageable.getPageNumber(), pageable.getPageSize());
+
+        }
+        else if (order.equals("heart")){
+            reviews= reviewService.findReviewsOrderByHeartsLength(pageable.getPageNumber(), pageable.getPageSize());
+
+        }
+        else{
+            reviews = reviewService.findReviews(pageable.getPageNumber(), pageable.getPageSize());
+
+        }
         List<Review> reviewList = new ArrayList<Review>();
         if(reviews.hasContent()){
             reviewList = reviews.getContent();
@@ -44,8 +57,8 @@ public class ReviewController {
         boolean heart = false;
         if (authentication != null){
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-            User user = principal.getUser();
-            if (!(heartService.isNotAlreadyLike(user,reviewService.findById(id).get()))){
+            Member member = principal.getMember();
+            if (!(heartService.isNotAlreadyLike(member,reviewService.findById(id).get()))){
                 heart = true;
             }
         }
@@ -70,7 +83,7 @@ public class ReviewController {
     public String createReview(@Valid ReviewDto dto, Authentication authentication){
 
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User user = principal.getUser();
+        Member member = principal.getMember();
         Webtoon webtoon=webtoonService.findWebtoonById(dto.getWebtoonId()).get();
         String img = webtoon.getImg();
         Review review = Review
@@ -79,7 +92,7 @@ public class ReviewController {
                 .content(dto.getContent())
                 .webtoonId(dto.getWebtoonId())
                 .img(img)
-                .user(user)
+                .member(member)
                 .build();
         reviewService.saveReview(review);
 
@@ -109,10 +122,10 @@ public class ReviewController {
         }
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 
-        User user = principal.getUser();
+        Member member = principal.getMember();
 
         Review review = reviewService.findById(id).get();
-        if (user.getId() != review.getUser().getId()){
+        if (member.getId() != review.getMember().getId()){
             MessageDto message = new MessageDto("본인이 작성한 글만 수정할 수 있습니다..", "/", RequestMethod.GET, null);
             model.addAttribute("params",message);
             return "messageRedirect";
@@ -139,9 +152,9 @@ public class ReviewController {
         }
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 
-        User user = principal.getUser();
+        Member member = principal.getMember();
         Review review = reviewService.findById(id).get();
-        if (user.getId() != review.getUser().getId()){
+        if (member.getId() != review.getMember().getId()){
             MessageDto message = new MessageDto("본인이 작성한 글만 삭제할 수 있습니다..", "/", RequestMethod.GET, null);
             model.addAttribute("params",message);
             return "messageRedirect";

@@ -4,12 +4,12 @@ import lombok.*;
 
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserResponse extends BaseTimeEntity{
+public class MemberResponse extends BaseTimeEntity{
     private String username;
     private String password;
     @Builder
-    public UserResponse(User user) {
-        this.username = user.getUsername();
-        this.password = user.getPassword();
+    public MemberResponse(Member member) {
+        this.username = member.getUsername();
+        this.password = member.getPassword();
     }
 }

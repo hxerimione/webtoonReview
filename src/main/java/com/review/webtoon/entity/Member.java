@@ -1,7 +1,6 @@
 package com.review.webtoon.entity;
 
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.List;
 @Entity
 @Getter @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseTimeEntity{
+public class Member extends BaseTimeEntity{
     @GeneratedValue
     @Id
     private Long id;
@@ -25,13 +24,13 @@ public class User extends BaseTimeEntity{
     private String provider; //oauth2를 이용할 경우 어떤 플랫폼을 이용할지 Ex naver,kakao
     private String providerId; //oauth2를 이용할 경우 아이디값
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Heart> hearts = new ArrayList<>();
     @Builder
-    public User(String username, String password, String email,Role role){
+    public Member(String username, String password, String email, Role role){
         this.username = username;
         this.password = password;
         this.email = email;
@@ -39,7 +38,7 @@ public class User extends BaseTimeEntity{
     }
 
     @Builder(builderClassName = "OAuth2Register", builderMethodName = "oauth2Register")
-    public User(String username, String password, String email, Role role, String provider, String providerId){
+    public Member(String username, String password, String email, Role role, String provider, String providerId){
         this.username = username;
         this.password = password;
         this.email = email;

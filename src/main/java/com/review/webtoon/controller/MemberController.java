@@ -2,8 +2,7 @@ package com.review.webtoon.controller;
 
 import com.review.webtoon.auth.PrincipalDetails;
 import com.review.webtoon.entity.*;
-import com.review.webtoon.repository.ReviewRepository;
-import com.review.webtoon.repository.UserRepository;
+import com.review.webtoon.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,10 +16,9 @@ import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
-public class UserController {
-    private final UserRepository userRepository;
+public class MemberController {
+    private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final ReviewRepository reviewRepository;
     @GetMapping("/loginForm")
     public String loginForm(){
         return "login";
@@ -40,20 +38,20 @@ public class UserController {
         }
         //PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 
-        //User user = principal.getUser();
+        //Member user = principal.getMember();
         String username = principalDetails.getUsername();
-        User byUsernameWithReviews = userRepository.findByUsernameWithReviews(username);
+        Member byUsernameWithReviews = memberRepository.findByUsernameWithReviews(username);
         model.addAttribute("userReview",byUsernameWithReviews.getReviews());
         return "userReview";
     }
     @PostMapping("/join")
-    public String join(@ModelAttribute UserJoin userJoin){
-        userJoin.setRole(Role.ROLE_USER);
+    public String join(@ModelAttribute MemberJoin memberJoin){
+        memberJoin.setRole(Role.ROLE_USER);
         //비밀번호 암호화
-        String encodePwd = bCryptPasswordEncoder.encode(userJoin.getPassword());
-        userJoin.setPassword(encodePwd);
+        String encodePwd = bCryptPasswordEncoder.encode(memberJoin.getPassword());
+        memberJoin.setPassword(encodePwd);
         //DTO to Entity
-        userRepository.save(userJoin.toEntity());
+        memberRepository.save(memberJoin.toEntity());
         return "redirect:/loginForm";
     }
     @GetMapping("/user")
@@ -61,29 +59,18 @@ public class UserController {
     public String user(){
         return "user";
     }
-    @GetMapping("/manager")
-    @ResponseBody
-    public String manager(){
-        return "manager";
-    }
-
-    @GetMapping("/admin")
-    @ResponseBody
-    public String admin(){
-        return "admin";
-    }
 
     @GetMapping("/form/loginInfo")
     @ResponseBody
     public String formLoginInfo(Authentication authentication, @AuthenticationPrincipal PrincipalDetails principalDetails){
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 
-        User user = principal.getUser();
-        System.out.println(user);
-        //user, user1은 같은 유저
-        User user1 = principalDetails.getUser();
-        System.out.println(user1);
-        return UserResponse.builder().user(user).build().toString();
+        Member member = principal.getMember();
+        System.out.println(member);
+        //member, user1은 같은 유저
+        Member member1 = principalDetails.getMember();
+        System.out.println(member1);
+        return MemberResponse.builder().member(member).build().toString();
     }
 
     @GetMapping("/oauth/loginInfo")
@@ -105,7 +92,7 @@ public class UserController {
 
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         //provider==null이면 플랫폼이 없다는 뜻 == formlogin 이다.
-        if(principal.getUser().getProvider() == null){
+        if(principal.getMember().getProvider() == null){
             result += "Form 로그인 : " + principal;
         }else{
             result += "OAuth2 로그인 : " + principal;

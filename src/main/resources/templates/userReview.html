@@ -20,7 +20,7 @@
                     <td th:text="${i.count}"></td>
                     <td><a th:href="@{/review/{id}(id=${ur.id})}" th:text="${ur.title}">title</a></td>
                     <td th:text="${ur.createdDate}"></td>
-                    <td th:text="${ur.user.username}"></td>
+                    <td th:text="${ur.member.username}"></td>
                 </tr>
                 </tbody>
             </table>

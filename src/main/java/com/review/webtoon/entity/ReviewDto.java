@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Getter @Setter
@@ -29,7 +28,7 @@ public class ReviewDto extends BaseTimeEntity{
         this.webtoonId = review.getWebtoonId();
         this.img = review.getImg();
         this.hearts = review.getHearts().size();
-        this.username = review.getUser().getUsername();
+        this.username = review.getMember().getUsername();
     }
     @Builder
     public ReviewDto(String title, String content, Long webtoonId){

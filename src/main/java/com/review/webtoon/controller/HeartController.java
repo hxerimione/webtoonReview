@@ -1,8 +1,8 @@
 package com.review.webtoon.controller;
 
 import com.review.webtoon.auth.PrincipalDetails;
+import com.review.webtoon.entity.Member;
 import com.review.webtoon.entity.MessageDto;
-import com.review.webtoon.entity.User;
 import com.review.webtoon.service.HeartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +18,12 @@ import org.springframework.web.bind.annotation.*;
 public class HeartController {
     private final HeartService heartService;
     @PostMapping("review/heart/{reviewId}")
-    @ResponseBody
     public boolean like(@PathVariable Long reviewId, Authentication authentication){
-        System.out.println("hi");
+
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        User user = principal.getUser();
+        Member member = principal.getMember();
         // 저장 true, 삭제 false
-        boolean result = heartService.addHeart(user.getId(),reviewId);
+        boolean result = heartService.addHeart(member.getId(),reviewId);
         return result;
     }
     @GetMapping("/hearts")
@@ -37,9 +36,9 @@ public class HeartController {
         }
         //PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 
-        //User user = principal.getUser();
+        //Member user = principal.getMember();
         String username = principalDetails.getUsername();
-        User byUsernameWithHearts = heartService.findByUserWithReview(username);
+        Member byUsernameWithHearts = heartService.findByUserWithReview(username);
         model.addAttribute("hearts",byUsernameWithHearts.getHearts());
         return "hearts";
     }

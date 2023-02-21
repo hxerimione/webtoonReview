@@ -1,8 +1,8 @@
 package com.review.webtoon.service;
 
 import com.review.webtoon.auth.PrincipalDetails;
-import com.review.webtoon.entity.User;
-import com.review.webtoon.repository.UserRepository;
+import com.review.webtoon.entity.Member;
+import com.review.webtoon.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PrincipalDetailsService implements UserDetailsService {
     //login시 호출
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User byUsername = userRepository.findByUsername(username);
+        Member byUsername = memberRepository.findByUsername(username);
         if(byUsername!=null){
             return new PrincipalDetails(byUsername);
         }

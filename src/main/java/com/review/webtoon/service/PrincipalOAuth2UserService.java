@@ -2,8 +2,8 @@ package com.review.webtoon.service;
 
 import com.review.webtoon.auth.PrincipalDetails;
 import com.review.webtoon.entity.Role;
-import com.review.webtoon.entity.User;
-import com.review.webtoon.repository.UserRepository;
+import com.review.webtoon.entity.Member;
+import com.review.webtoon.repository.MemberRepository;
 import com.review.webtoon.userinfo.KakaoUserInfo;
 import com.review.webtoon.userinfo.NaverUserInfo;
 import com.review.webtoon.userinfo.OAuth2UserInfo;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
@@ -44,14 +44,14 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         String email = oAuth2UserInfo.getEmail();
         Role role = Role.ROLE_USER;
         System.out.println(email);
-        User byUsername = userRepository.findByUsername(username);
+        Member byUsername = memberRepository.findByUsername(username);
 
-        if(userRepository.findByUsername(username) == null){
-            byUsername = User.oauth2Register()
+        if(memberRepository.findByUsername(username) == null){
+            byUsername = Member.oauth2Register()
                     .username(username).password(password).email(email).role(role)
                     .provider(provider).providerId(providerId)
                     .build();
-            userRepository.save(byUsername);
+            memberRepository.save(byUsername);
         }
         return new PrincipalDetails(byUsername, oAuth2UserInfo);
     }

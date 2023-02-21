@@ -1,6 +1,6 @@
 package com.review.webtoon.auth;
 
-import com.review.webtoon.entity.User;
+import com.review.webtoon.entity.Member;
 import com.review.webtoon.userinfo.OAuth2UserInfo;
 import lombok.Getter;
 import lombok.ToString;
@@ -16,15 +16,15 @@ import java.util.Map;
 @ToString
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
-    private User user;
+    private Member member;
     //private Map<String,Object> attributes;
     private OAuth2UserInfo oAuth2UserInfo;
-    public PrincipalDetails(User user) {
-        this.user = user;
+    public PrincipalDetails(Member member) {
+        this.member = member;
     }
 
-    public PrincipalDetails(User user, OAuth2UserInfo oAuth2UserInfo) {
-        this.user = user;
+    public PrincipalDetails(Member member, OAuth2UserInfo oAuth2UserInfo) {
+        this.member = member;
         this.oAuth2UserInfo = oAuth2UserInfo;
     }
 
@@ -38,7 +38,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         collect.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return user.getRole().toString();
+                return member.getRole().toString();
             }
         });
         return collect;
@@ -46,12 +46,12 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     @Override //UserDetails, 계정의 비밀번호 리턴
     public String getPassword() {
-        return user.getPassword();
+        return member.getPassword();
     }
 
     @Override //UserDetails, 계정의 고유한 값 리턴
     public String getUsername() {
-        return user.getUsername();
+        return member.getUsername();
     }
 
     @Override //UserDetails, 계정의 만료 여부 리턴

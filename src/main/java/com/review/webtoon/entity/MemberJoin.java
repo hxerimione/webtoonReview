@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter @Setter
 @NoArgsConstructor
-public class UserJoin extends BaseTimeEntity{
+public class MemberJoin extends BaseTimeEntity{
     @NotNull
     private String username;
     @NotNull
@@ -17,15 +17,15 @@ public class UserJoin extends BaseTimeEntity{
     private Role role;
 
     @Builder
-    public UserJoin(String username, String password, String email, Role role) {
+    public MemberJoin(String username, String password, String email, Role role) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
     }
 
-    public User toEntity(){
-        return User.builder()
+    public Member toEntity(){
+        return Member.builder()
                 .username(username)
                 .password(password)
                 .email(email)

@@ -1,6 +1,5 @@
 package com.review.webtoon.apiController;
 
-import com.review.webtoon.auth.PrincipalDetails;
 import com.review.webtoon.entity.*;
 import com.review.webtoon.service.HeartService;
 import com.review.webtoon.service.ReviewService;
@@ -9,12 +8,9 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,13 +26,25 @@ public class ApiReviewController {
     private final ReviewService reviewService;
     private final WebtoonService webtoonService;
     private final HeartService heartService;
+
     @GetMapping("/review")
-    public List<ReviewResponse> list(@PageableDefault(sort = {"title"},direction = Sort.Direction.ASC,size =12) Pageable pageable){
-        Page<Review> reviews = reviewService.findReviews(pageable.getPageNumber(), pageable.getPageSize());
-        List<ReviewResponse> result = reviews.stream()
-                .map(o->new ReviewResponse(o))
-                .collect(Collectors.toList());
-        return result;
+    public List<ReviewResponse> listOrderByHeartsLength(@RequestParam(value = "order",required = false)String order,@PageableDefault(size = 12) Pageable pageable){
+        if(order == null){
+            Page<Review> reviews = reviewService.findReviews(pageable.getPageNumber(), pageable.getPageSize());
+            List<ReviewResponse> result = reviews.stream()
+                    .map(o->new ReviewResponse(o))
+                    .collect(Collectors.toList());
+            return result;
+        }
+        else if (order.equals("heart")) {
+            Page<Review> reviews = reviewService.findReviewsOrderByHeartsLength(pageable.getPageNumber(), pageable.getPageSize());
+            List<ReviewResponse> result = reviews.stream()
+                    .map(o -> new ReviewResponse(o))
+                    .collect(Collectors.toList());
+            System.out.println("hello");
+            return result;
+        }
+        return new ArrayList<>();
     }
 
     @Data
@@ -45,11 +53,13 @@ public class ApiReviewController {
         private String content;
         private String img;
         private String username;
+        private int haert;
         public ReviewResponse(Review review){
             this.content = review.getContent();
             this.title = review.getTitle();
             this.img = review.getImg();
-            this.username = review.getUser().getUsername();
+            this.username = review.getMember().getUsername();
+            this.haert = review.getHearts().size();
         }
     }
     @GetMapping("/review/{id}")

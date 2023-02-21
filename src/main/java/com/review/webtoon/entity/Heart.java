@@ -16,16 +16,16 @@ public class Heart {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "review_id")
     private Review review;
 
     @Builder
-    public Heart(User user, Review review) {
-        this.user = user;
+    public Heart(Member member, Review review) {
+        this.member = member;
         this.review = review;
     }
 
