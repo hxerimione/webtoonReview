@@ -40,7 +40,7 @@ spring:
         registration: #인증
           kakao:
             client-id: e2b91ae7dfb0ac574fad76ba27a9dd0b
-            redirect-uri: http://webtoon-review.heroku.com/login/oauth2/code/kakao # http://localhost:8080/login/oauth2/code/kakao
+            redirect-uri: http://webtoon-review.herokuapp.com/login/oauth2/code/kakao # http://localhost:8080/login/oauth2/code/kakao
             client-authentication-method: POST
             authorization-grant-type: authorization_code #OAuth2는 4가지 Authorization Grant유형이 있다
             scope: profile_nickname, account_email #제공받는 정보
@@ -51,7 +51,7 @@ spring:
             scope: name,email
             client-name: Naver
             authorization-grant-type: authorization_code
-            redirect-uri: http://webtoon-review.heroku.com/login/oauth2/code/naver
+            redirect-uri: http://webtoon-review.herokuapp.com/login/oauth2/code/naver
         provider: #제공자
           kakao:
             authorization_uri: https://kauth.kakao.com/oauth/authorize #인증을 요청하는 url

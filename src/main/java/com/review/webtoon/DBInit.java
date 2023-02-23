@@ -23,7 +23,7 @@ public class DBInit {
     private final HeartRepository heartRepository;
     @PostConstruct
     public void init(){
-
+/*
         String encodePwd1 = bCryptPasswordEncoder.encode("pw1234");
         Member member1 = Member.builder()
                 .username("member1")
@@ -98,5 +98,9 @@ public class DBInit {
                 .member(member1)
                 .build();
         heartRepository.save(like3);
+        
+ */
     }//special 2 special first 1
+
+
 }

@@ -161,6 +161,6 @@ public class ReviewController {
         }
 
         reviewService.deleteById(id);
-        return "redirect:/";
+        return "redirect:/review";
     }
 }
