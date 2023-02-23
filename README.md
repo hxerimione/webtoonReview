@@ -1,8 +1,13 @@
 # webtoonReview
 ✏️웹툰 리뷰 프로그램📚
+
+[개발 일지 << click !](https://hxerimione.notion.site/8ea0b690f3c1413881e2963be650f2b9?v=e4a9cb79b12f4ff59b769929d930fdcc)
+
+
 ![cover](./image/cover.png)
 <br>
 <br>
+
 
 ### 서비스 핵심 기능
 
@@ -43,7 +48,7 @@
 
 리뷰 수정 및 삭제가 가능합니다.
 
-<img src="./image/update_error.png" width="80%">
+<img src="./image/update_error.png">
 
 내가 작성하지 않은 리뷰는 수정할 수 없습니다.
 
