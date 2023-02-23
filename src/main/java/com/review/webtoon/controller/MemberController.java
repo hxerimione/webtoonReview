@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @Controller
@@ -41,7 +42,12 @@ public class MemberController {
         //Member user = principal.getMember();
         String username = principalDetails.getUsername();
         Member byUsernameWithReviews = memberRepository.findByUsernameWithReviews(username);
-        model.addAttribute("reviews",byUsernameWithReviews.getReviews());
+        if (byUsernameWithReviews.getReviews().isEmpty()){
+            model.addAttribute("reviews",new ArrayList<>());
+        }else{
+            model.addAttribute("reviews",byUsernameWithReviews.getReviews());
+        }
+
         return "userReview";
     }
     @PostMapping("/join")

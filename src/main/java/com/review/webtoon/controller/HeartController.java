@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -40,7 +42,12 @@ public class HeartController {
         //Member user = principal.getMember();
         String username = principalDetails.getUsername();
         Member byUsernameWithHearts = heartService.findByUserWithReview(username);
-        model.addAttribute("hearts",byUsernameWithHearts.getHearts());
+        if (byUsernameWithHearts.getHearts().isEmpty()){
+
+            model.addAttribute("hearts",new ArrayList<>());
+        }else {
+            model.addAttribute("hearts", byUsernameWithHearts.getHearts());
+        }
         return "hearts";
     }
 }
