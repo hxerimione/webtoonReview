@@ -98,7 +98,7 @@ public class DBInit {
                 .member(member1)
                 .build();
         heartRepository.save(like3);
-        
+
  */
     }//special 2 special first 1
 

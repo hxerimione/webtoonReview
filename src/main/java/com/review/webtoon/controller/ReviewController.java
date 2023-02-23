@@ -132,7 +132,7 @@ public class ReviewController {
         }
 
         model.addAttribute(review);
-        return "userReview";
+        return "review/updateReview";
 
     }
     @PutMapping("/update/{id}")
@@ -141,7 +141,7 @@ public class ReviewController {
         Review review = reviewService.findById(id).get();
         review.update(form);
         reviewService.saveReview(review);
-        return "redirect:/";
+        return "redirect:/review";
     }
     @DeleteMapping("/review/{id}")
     public String delete(Authentication authentication,@PathVariable Long id,Model model){
