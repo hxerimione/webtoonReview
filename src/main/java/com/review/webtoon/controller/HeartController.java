@@ -42,7 +42,7 @@ public class HeartController {
         //Member user = principal.getMember();
         String username = principalDetails.getUsername();
         Member byUsernameWithHearts = heartService.findByUserWithReview(username);
-        if (byUsernameWithHearts.getHearts().isEmpty()){
+        if (byUsernameWithHearts.getHearts().size() == 0){
 
             model.addAttribute("hearts",new ArrayList<>());
         }else {

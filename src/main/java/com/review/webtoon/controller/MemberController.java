@@ -42,7 +42,7 @@ public class MemberController {
         //Member user = principal.getMember();
         String username = principalDetails.getUsername();
         Member byUsernameWithReviews = memberRepository.findByUsernameWithReviews(username);
-        if (byUsernameWithReviews.getReviews().isEmpty()){
+        if (byUsernameWithReviews.getReviews().size()==0){
             model.addAttribute("reviews",new ArrayList<>());
         }else{
             model.addAttribute("reviews",byUsernameWithReviews.getReviews());
