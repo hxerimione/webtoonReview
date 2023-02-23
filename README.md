@@ -59,6 +59,9 @@
 
 리뷰에 좋아요를 누를 수 있습니다. 추천하게되면 추천수가 +1 됩니다.
 
+#### 5.내가 쓴 글 & 좋아요 한 글 조회
+![myReview](./image/myReview.png) |![myHeart](./image/myHeart.png)
+--- | --- | 
 
 ### 사용 스킬 & 기술
 
