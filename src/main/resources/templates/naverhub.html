@@ -1,130 +1,123 @@
 <!DOCTYPE HTML>
 <html lang="ko"
       xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header" />
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="header">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+    <nav class="navbar navbar-light navbar-expand-lg"  style="background-color: #FFCCCC;">
+        <a class="navbar-brand" href="/review">Writer</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/hub">웹툰</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/review">리뷰</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                        플랫폼
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/hub?platform=naver">네이버</a>
+                        <a class="dropdown-item" href="/hub?platform=kakao">카카오</a>
+                    </div>
+                </li>
+                <li sec:authorize="isAnonymous()">
+                    <a class="nav-link" href="/loginForm">로그인</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="/logout">로그아웃</a>
+
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a class="nav-link disabled"sec:authentication="name"></a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="/review/new">새 글 작성</a>
+                </li>
+            </ul>
+
+            <form action="/hub" method="get" class="form-inline my-2 my-lg-0">
+                <div class="form-group">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="keyword">
+                </div>
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+</head>
+
 <style>
-header {
-  background: deeppink;
-  color: white;
-  padding-left: 32px;
-  padding-right: 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  opacity: 0.7;
-  backdrop-filter: blur(30px);
+  .card-deck .card {
+    flex-basis: 100%;
 }
-ul a {
-  display: inline-block;
-  margin-left: 16px;
-  font-size: 18px;
-  font-weight: bold;
+
+@media (min-width: 992px) {
+    .card-deck .card {
+        max-width: calc(23%);
+        flex-basis: calc(25% - 30px); /* #{$grid-gutter-width} */
+    }
 }
-    #nav {
-        text-align: center;
+@media (max-width: 992px) {
+    .card-deck .card {
+        max-width: calc(30%);
+        flex-basis: calc(33% - 30px); /* #{$grid-gutter-width} */
     }
-    ul {
-        list-style: none;
-        display: inline-block;
-        margin: 0;
-        padding: 0;
+}
+@media (max-width: 767px) {
+    .card-deck .card {
+        max-width: calc(47%);
+        flex-basis: calc(50% - 30px); /* #{$grid-gutter-width} */
     }
-    ul li {
-        float: left;
-        margin: 0 0px;
+}
+@media (max-width: 575px) {
+    .card-deck .card {
+        max-width: calc(100%);
+        flex-basis: calc(100% - 30px); /* #{$grid-gutter-width} */
     }
-    ul li a {
-        color: white;
-    }
-    #container {
-        margin: 0 auto;
-        border: 20px solid #fff;
-    }
-    #wrapper {
-      display: grid;
-      grid-template-columns: 50% 50%;
-      height : 80%;
-      margin: 15px;
-    }
-    .items:nth-child(2n+1) {
-        margin : 10px;
-        padding : 10px;
-        text-align : center;
-        border : 1px solid black;
-    }
-    .items:nth-child(2n) {
-        margin : 10px;
-        padding: 10px;
-        text-align : center;
-        border : 1px solid black;
-    }
-    @media ( max-width: 300px ) {
-        #wrapper {
-      display: grid;
-      grid-template-columns: 100%;
-      height : 80%;
-      margin: 15px;
-    }
-    .items:nth-child(2n+1) {
-        margin : 10px;
-        padding : 10px;
-        text-align : center;
-        border : 1px solid black;
-    }
-    .items:nth-child(2n) {
-        margin : 10px;
-        padding: 10px;
-        text-align : center;
-        border : 1px solid black;
-    }
-      }
+}
 </style>
 <body>
 <div id = "container">
-    <div>
-        <div>플랫폼</div>
-        <a href="/hub/naver">네이버</a>
-        <a href="/hub/kakao">카카오</a>
-    </div>
-    <form action="/hub" method="get">
-        <div class="form-group">
-            <input type="text" name="keyword">
-        </div>
-        <button type="submit">검색</button>
 
-    </form>
-    <div id = "wrapper" >
-        <div class="items" th:each="webtoon : ${webtoons}">
-            <a th:href ="${webtoon.url}">
-                <div>
-                    <img th:src = "${webtoon.img}" style="min-width:20px;"/>
-                </div>
-            </a>
-            <div>
+
+    <div class = "container" >
+        <div class="card-deck">
+            <div class="card" style="margin:10px" th:each="webtoon : ${webtoons}">
                 <a th:href ="${webtoon.url}">
-                    <h4 th:text="${webtoon.title}"></h4>
-                    <div>
+                    <img class="card-img-top" th:src="${webtoon.img}"alt="Card image cap">
+                    <div class ="card-body">
+                        <h5 th:text="${webtoon.title}"></h5>
                         <p th:text="${webtoon.author}"></p>
                     </div>
                 </a>
 
             </div>
         </div>
-
     </div>
-    <div id = "nav" >
-        <ul>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
             <th:block  th:with="start = ${pagination.startPage}, end = ${pagination.endPage}">
-                <li
-                        th:each="pageButton : ${#numbers.sequence(start, end)}">
-                    <a class="page-link" th:href="@{/hub/naver?page={page} (page = ${pageButton})}" th:text=${pageButton}></a>
+                <li th:each="pageButton : ${#numbers.sequence(start, end)}">
+                    <a class="page-link" th:href="@{/hub?platform=naver&page={page} (page = ${pageButton})}" th:text=${pageButton}></a>
                 </li>
             </th:block>
+
         </ul>
-    </div>
+    </nav>
+
 
 </div>
 </body>

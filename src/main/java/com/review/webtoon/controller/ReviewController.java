@@ -96,7 +96,7 @@ public class ReviewController {
                 .build();
         reviewService.saveReview(review);
 
-        return "redirect:/";
+        return "redirect:/review";
     }
     @GetMapping("/review/selectWebtoon")
     public String selectWebtoon(@RequestParam(required = false) String keyword,
@@ -126,13 +126,13 @@ public class ReviewController {
 
         Review review = reviewService.findById(id).get();
         if (member.getId() != review.getMember().getId()){
-            MessageDto message = new MessageDto("본인이 작성한 글만 수정할 수 있습니다..", "/", RequestMethod.GET, null);
+            MessageDto message = new MessageDto("본인이 작성한 글만 수정할 수 있습니다.", "/review", RequestMethod.GET, null);
             model.addAttribute("params",message);
             return "messageRedirect";
         }
 
         model.addAttribute(review);
-        return "review/updateReview";
+        return "userReview";
 
     }
     @PutMapping("/update/{id}")
@@ -155,7 +155,7 @@ public class ReviewController {
         Member member = principal.getMember();
         Review review = reviewService.findById(id).get();
         if (member.getId() != review.getMember().getId()){
-            MessageDto message = new MessageDto("본인이 작성한 글만 삭제할 수 있습니다..", "/", RequestMethod.GET, null);
+            MessageDto message = new MessageDto("본인이 작성한 글만 삭제할 수 있습니다.", "/review", RequestMethod.GET, null);
             model.addAttribute("params",message);
             return "messageRedirect";
         }

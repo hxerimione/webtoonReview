@@ -1,29 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:fragment="header" >
-    <!-- Required meta tags -->
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <title>webtoon review</title>
-    <meta http-equiv="Content-Type" content=" charset=UTF-8; width=device-width, initial-scale=1.0" name="viewport" />
+<head th:fragment="header">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
     <header>
-    <center>
-        <h1>webtoon review</h1>
-        <nav>
-            <ul>
-                <a href="/review">리뷰</a>
-                <a href="/review?order=heart">좋아요순</a>
-                <a href="/hub">전체 웹툰</a>
-                <div sec:authorize="isAnonymous()">
-                    <a href="/loginForm">로그인</a>
-                </div>
-                <div sec:authorize="isAuthenticated()">
-                    <a href="/logout">로그아웃</a>
-                    <p sec:authentication="name"></p>
-                </div>
+    <nav class="navbar navbar-light navbar-expand-lg"  style="background-color: #FFCCCC;">
+        <a class="navbar-brand" href="/review">Writer</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/hub">웹툰</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/review">리뷰</a>
+                </li>
+
+                <li sec:authorize="isAnonymous()">
+                    <a class="nav-link" href="/loginForm">로그인</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="/logout">로그아웃</a>
+
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a class="nav-link disabled"sec:authentication="name"></a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="/review/new">새 글 작성</a>
+                </li>
+
             </ul>
-        </nav>
-    </center>
-    </header>
+
+            <form action="/hub" method="get" class="form-inline my-2 my-lg-0">
+                <div class="form-group">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="keyword">
+                </div>
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+</header>
 </head>

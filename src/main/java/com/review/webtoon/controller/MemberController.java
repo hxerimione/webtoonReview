@@ -28,7 +28,7 @@ public class MemberController {
         return "join";
     }
 
-    @GetMapping("/userReview")
+    @GetMapping("/myReview")
     public String userReview(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
 
         if (principalDetails == null){
@@ -41,7 +41,7 @@ public class MemberController {
         //Member user = principal.getMember();
         String username = principalDetails.getUsername();
         Member byUsernameWithReviews = memberRepository.findByUsernameWithReviews(username);
-        model.addAttribute("userReview",byUsernameWithReviews.getReviews());
+        model.addAttribute("reviews",byUsernameWithReviews.getReviews());
         return "userReview";
     }
     @PostMapping("/join")

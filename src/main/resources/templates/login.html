@@ -2,41 +2,42 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/header :: header" />
 <body>
-<h1>로그인 페이지</h1>
-<hr/>
 
-<h2>로그인 유저 : </h2>
+<div class="container">
+    <br/>
 <p sec:authentication="name"></p>
-
-<div sec:authorize="isAnonymous()" style="background-color:green; padding:1em;">
+<br/>
+<div sec:authorize="isAnonymous()" >
     <form action="/login" method="post" >
-        <input type="text" name="username" />
-        <input type="password" name="password" />
-        <button>로그인</button>
+        <div class="form-group">
+            <input type="text" class="form-control" id="username" name="username">
+<br/>
+            <input type="password" class="form-control" id="password" name="password" />
+            <br/>
+        <button type="submit" class="btn btn-primary">로그인</button>
+        </div>
     </form>
 
-    <a href="/oauth2/authorization/naver">네이버 로그인</a>
-    <a href="/oauth2/authorization/kakao">카카오 로그인</a>
+    <a href="/oauth2/authorization/naver">
+        <button type="button" class="btn btn-success">네이버 로그인</button>
+    </a>
+    <a href="/oauth2/authorization/kakao">
+        <button type="button" class="btn btn-warning">카카오 로그인</button>
+    </a>
     <!-- /oauth2/authorization/{registrationId}에 요청이 들어오면,
     스프링 시큐리티가 provider의 authorization-uri로 요청을 전달한다-->
     <br><br>
 
-    <a href="/joinForm">회원가입하기</a><br>
+    <a href="/joinForm">
+        <button type="button" class="btn btn-secondary">회원가입</button>
+    </a><br>
 </div>
 
-<div sec:authorize="isAuthenticated()" style="background-color:pink; padding:1em;">
-    <a href="/logout">로그아웃</a>
+<div sec:authorize="isAuthenticated()">
+    <a href="/logout">
+        <button type="button" class="btn btn-primary">로그아웃</button>
+    </a>
 </div>
-
-<br><br>
-<a href="/member">유저</a><br>
-<a href="/manager" sec:authorize="hasRole('ROLE_ADMIN')">매니저</a><br>
-<a href="/admin" sec:authorize="hasRole('ROLE_ADMIN')">어드민</a><br>
-
-<br><br>
-<a href="/form/loginInfo">Form 로그인 정보</a>
-<a href="/oauth/loginInfo">OAuth2 로그인 정보</a>
-<a href="/loginInfo">로그인 정보</a>
-
+</div>
 </body>
 </html>

@@ -3,87 +3,11 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/header :: header" />
-<style>
-header {
-  background: deeppink;
-  color: white;
-  padding-left: 32px;
-  padding-right: 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  opacity: 0.7;
-  backdrop-filter: blur(30px);
-}
-ul a {
-  display: inline-block;
-  margin-left: 16px;
-  font-size: 18px;
-  font-weight: bold;
-}
-    #nav {
-        text-align: center;
-    }
-    ul {
-        list-style: none;
-        display: inline-block;
-        margin: 0;
-        padding: 0;
-    }
-    ul li {
-        float: left;
-        margin: 0 0px;
-    }
-    ul li a {
-        color: white;
-    }
-    #container {
-        margin: 0 auto;
-        border: 20px solid #fff;
-    }
-    #wrapper {
-      display: grid;
-      grid-template-columns: 50% 50%;
-      height : 80%;
-      margin: 15px;
-    }
-    .items:nth-child(2n+1) {
-        margin : 10px;
-        padding : 10px;
-        text-align : center;
-        border : 1px solid black;
-    }
-    .items:nth-child(2n) {
-        margin : 10px;
-        padding: 10px;
-        text-align : center;
-        border : 1px solid black;
-    }
-    @media ( max-width: 300px ) {
-        #wrapper {
-      display: grid;
-      grid-template-columns: 100%;
-      height : 80%;
-      margin: 15px;
-    }
-    .items:nth-child(2n+1) {
-        margin : 10px;
-        padding : 10px;
-        text-align : center;
-        border : 1px solid black;
-    }
-    .items:nth-child(2n) {
-        margin : 10px;
-        padding: 10px;
-        text-align : center;
-        border : 1px solid black;
-    }
-      }
-</style>
+
 <body>
 <div class="container">
+    <br/>
+    <br/>
     <script src="//code.jquery.com/jquery.min.js"></script>
         <script th:inline="javascript">
     /** 로그인하지 않은 유저가 좋아요 누를 때 **/
@@ -154,31 +78,42 @@ ul a {
         }
     }
     </script>
-    <div th:text="${review.title}">title</div>
-    <div th:text="${review.content}">content</div>
-    <div th:text="${review.createdDate}">createdDate</div>
-    <div th:text="${review.modifiedDate}">modifiedDate</div>
+    <div class="card text-center">
+        <div class="card-header" th:text="${review.member.username}">
+            Featured
+        </div>
+        <div class="card-body">
+            <h5 class="card-title" th:text="${review.title}">title</h5>
+            <p class="card-text" th:text="${review.content}">content</p>
+        </div>
+<br/>
+        <input type="hidden" id = "reviewId" th:value="${review.id}">
+        <div sec:authorize-expr="isAuthenticated()">
+            <!-- 좋아요 -->
+            <input type="hidden" id="likeCheck" th:value="${heart}">
+            <button class="btn btn-danger" th:id="likeButton" onclick="clickHeart()">좋아요</button>
+            <span th:text="${#lists.size(review.hearts)}"></span>
+        </div>
+        <div sec:authorize-expr="!isAuthenticated()">
+            <!-- 로그인하지 않은 유저라면 -->
+            <button class="btn btn-danger" th:id="loginCheck" onclick="notLogin()">좋아요</button>
+            <span th:text="${#lists.size(review.hearts)}"></span>
+        </div>
+<br/>
+        <a type="button" th:href="@{/update/{id}(id=${review.id})}">
+            <button class="btn btn-primary">수정</button>
+        </a>
+        <form th:action="@{/review/{id}(id=${review.id})}" method="post">
 
-    <input type="hidden" id = "reviewId" th:value="${review.id}">
-    <div sec:authorize-expr="isAuthenticated()">
-        <!-- 좋아요 -->
-        <input type="hidden" id="likeCheck" th:value="${heart}">
-        <button th:id="likeButton" onclick="clickHeart()">좋아요</button>
-        <span th:text="${#lists.size(review.hearts)}"></span>
+            <input type="hidden" name="_method" value="delete">
+            <button id="delete-btn" class="btn btn-secondary">삭제</button>
+        </form>
+
+        <br/>
+            <div class="card-footed text-muted" th:text="${review.modifiedDate}">modifiedDate</div>
+
+
     </div>
-    <div sec:authorize-expr="!isAuthenticated()">
-        <!-- 로그인하지 않은 유저라면 -->
-        <button th:id="loginCheck" onclick="notLogin()">좋아요</button>
-        <span th:text="${#lists.size(review.hearts)}"></span>
-    </div>
-
-    <a type="button" th:href="@{/update/{id}(id=${review.id})}">수정</a>
-    <form th:action="@{/review/{id}(id=${review.id})}" method="post">
-
-        <input type="hidden" name="_method" value="delete">
-        <button id="delete-btn">삭제</button>
-    </form>
-
 </div>
 </body>
 </html>

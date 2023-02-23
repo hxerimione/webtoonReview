@@ -43,30 +43,46 @@ public class DBInit {
         Review review1 = Review.builder()
                 .title("special first")
                 .content("special first")
-                .webtoonId(20000L)
-                .img("https://shared-comic.pstatic.net/thumb/webtoon/651673/thumbnail/thumbnail_IMAG10_659b9446-0940-494a-bb5f-5893290a84d0.jpg")
+                .webtoonId(30000L)
+                .img("https://dn-img-page.kakao.com/download/resource?kid=ctsChS/hzmU2G9wvy/kACXAoO74nAoyrjhyrQvL1&filename=th3")
                 .member(member2)
                 .build();
         reviewRepository.save(review1);
-        for (int i=0;i<30;i++){
+
             Review review = Review.builder()
-                    .title("제목"+i)
-                    .content("content"+i)
-                    .webtoonId(20000L+(long) i)
-                    .img("https://shared-comic.pstatic.net/thumb/webtoon/651673/thumbnail/thumbnail_IMAG10_659b9446-0940-494a-bb5f-5893290a84d0.jpg")
+                    .title("title0")
+                    .content("content0")
+                    .webtoonId(20000L)
+                    .img("https://dn-img-page.kakao.com/download/resource?kid=MyO5T/hzmU1nFTG6/nnlH21LT4mDo1QTcVIhea1&filename=th3")
                     .member(member2)
                     .build();
             reviewRepository.save(review);
-        }
+
+        Review review3 = Review.builder()
+                .title("title3")
+                .content("content3")
+                .webtoonId(30003L)
+                .img("https://dn-img-page.kakao.com/download/resource?kid=ddxk7R/hyxJJRQ2xs/lSqyzvbSBYQKTydrwpdj5k&filename=th3")
+                .member(member1)
+                .build();
+        reviewRepository.save(review3);
 
         Review review2 = Review.builder()
-                .title("special")
-                .content("special")
+                .title("title1")
+                .content("content2")
                 .webtoonId(20089L)
                 .img("https://shared-comic.pstatic.net/thumb/webtoon/774862/thumbnail/thumbnail_IMAG10_de9a71cc-8f60-4934-af66-69219950185d.jpg")
                 .member(member1)
                 .build();
         reviewRepository.save(review2);
+        Review review4 = Review.builder()
+                .title("title4")
+                .content("content4")
+                .webtoonId(20089L)
+                .img("https://dn-img-page.kakao.com/download/resource?kid=xWPEa/hzR1U52IFk/pXvV5VT3uek6YvkSGUVJI1&filename=th3")
+                .member(member1)
+                .build();
+        reviewRepository.save(review4);
         Heart like = Heart.builder()
                 .review(review2)
                 .member(member2)

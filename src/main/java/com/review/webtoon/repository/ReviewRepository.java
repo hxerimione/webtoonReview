@@ -1,7 +1,6 @@
 package com.review.webtoon.repository;
 
 import com.review.webtoon.entity.Review;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,7 +17,9 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     Optional<Review> findById(Long id);
     Review save(Review review);
     @Query(value = "select distinct r from Review r " +
-            "join fetch r.member",countQuery = "select count(r) from Review r")
+            "join fetch r.member " +
+            "group by r.id " +
+            "order by r.id desc",countQuery = "select count(r) from Review r")
     Page<Review> findAll(Pageable pageable);
     void deleteById(Long id);
     @Query(value = "select distinct r from Review r " +

@@ -1,29 +1,52 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/header :: header" />
+<style>
+  .card-deck .card {
+    flex-basis: 100%;
+}
+
+@media (min-width: 992px) {
+    .card-deck .card {
+        max-width: calc(23%);
+        flex-basis: calc(25% - 30px); /* #{$grid-gutter-width} */
+    }
+}
+@media (max-width: 992px) {
+    .card-deck .card {
+        max-width: calc(30%);
+        flex-basis: calc(33% - 30px); /* #{$grid-gutter-width} */
+    }
+}
+@media (max-width: 767px) {
+    .card-deck .card {
+        max-width: calc(47%);
+        flex-basis: calc(50% - 30px); /* #{$grid-gutter-width} */
+    }
+}
+@media (max-width: 575px) {
+    .card-deck .card {
+        max-width: calc(100%);
+        flex-basis: calc(100% - 30px); /* #{$grid-gutter-width} */
+    }
+}
+</style>
 <body>
 <div class="container" >
     <div class="container">
-        <div>
-            <a href="/review/new">새 글 작성</a>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th style="width: 5%">#</th>
-                    <th style="width: 50%">제목</th>
-                    <th style="width: 30%">작성시간</th>
-                    <th style="width: 15%">작성자</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="ur ,i: ${userReview}" >
-                    <td th:text="${i.count}"></td>
-                    <td><a th:href="@{/review/{id}(id=${ur.id})}" th:text="${ur.title}">title</a></td>
-                    <td th:text="${ur.createdDate}"></td>
-                    <td th:text="${ur.member.username}"></td>
-                </tr>
-                </tbody>
-            </table>
+        <br/>
+        <h5>내가 쓴 리뷰</h5>
+        <div class="card-deck">
+            <div class="card" style="margin:10px" th:each="r: ${reviews}">
+
+                <a th:href ="@{/review/{id}(id=${r.id})}">
+                    <img class="card-img-top" th:src = "${r.img}" alt="Card image cap" >
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${r.title}"></h5>
+                        <p class="card-text" th:text="${r.member.username}"></p>
+                    </div>
+                </a>
+            </div>
         </div>
     </div> <!-- /container -->
 </div>

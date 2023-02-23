@@ -1,24 +1,53 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/header :: header" />
+<style>
+  .card-deck .card {
+    flex-basis: 100%;
+}
+
+@media (min-width: 992px) {
+    .card-deck .card {
+        max-width: calc(23%);
+        flex-basis: calc(25% - 30px); /* #{$grid-gutter-width} */
+    }
+}
+@media (max-width: 992px) {
+    .card-deck .card {
+        max-width: calc(30%);
+        flex-basis: calc(33% - 30px); /* #{$grid-gutter-width} */
+    }
+}
+@media (max-width: 767px) {
+    .card-deck .card {
+        max-width: calc(47%);
+        flex-basis: calc(50% - 30px); /* #{$grid-gutter-width} */
+    }
+}
+@media (max-width: 575px) {
+    .card-deck .card {
+        max-width: calc(100%);
+        flex-basis: calc(100% - 30px); /* #{$grid-gutter-width} */
+    }
+}
+</style>
 <body>
+
 <div class="container" >
     <div class="container">
-        <div>
-            <a href="/review/new">새 글 작성</a>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th style="width: 5%">#</th>
-                    <th style="width: 50%">좋아요 누른 리뷰</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="h ,i: ${hearts}" >
-                    <td th:text="${h.review}"></td>
-                </tr>
-                </tbody>
-            </table>
+        <br/>
+        <h5>좋아요 누른 리뷰</h5>
+        <div class="card-deck">
+            <div class="card" style="margin:10px" th:each="h: ${hearts}">
+
+                <a th:href ="@{/review/{id}(id=${h.review.id})}">
+                    <img class="card-img-top" th:src = "${h.review.img}" alt="Card image cap" >
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${h.review.title}"></h5>
+                        <p class="card-text" th:text="${h.review.member.username}"></p>
+                    </div>
+                </a>
+            </div>
         </div>
     </div> <!-- /container -->
 </div>

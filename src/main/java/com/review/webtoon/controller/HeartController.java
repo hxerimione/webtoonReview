@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class HeartController {
     private final HeartService heartService;
     @PostMapping("review/heart/{reviewId}")
+    @ResponseBody
     public boolean like(@PathVariable Long reviewId, Authentication authentication){
 
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
