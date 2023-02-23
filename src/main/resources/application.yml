@@ -22,9 +22,9 @@ spring:
         enabled: true
   datasource:
     url: mysql://bd5160b50a6148:3afa5018@us-cdbr-east-06.cleardb.net/heroku_cdbdb1ef6eb6a4e?reconnect=true
-    username:
-    password:
-    driver-class-name: org.h2.Driver
+    username: bd5160b50a6148
+    password: 3afa5018
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
     hibernate:
