@@ -1,6 +1,7 @@
 package com.review.webtoon.controller;
 
 import com.review.webtoon.auth.PrincipalDetails;
+import com.review.webtoon.dto.MessageDto;
 import com.review.webtoon.entity.*;
 import com.review.webtoon.service.HeartService;
 import com.review.webtoon.service.ReviewService;

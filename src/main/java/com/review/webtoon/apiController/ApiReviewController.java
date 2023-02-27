@@ -28,23 +28,22 @@ public class ApiReviewController {
     private final HeartService heartService;
 
     @GetMapping("/review")
-    public List<ReviewResponse> listOrderByHeartsLength(@RequestParam(value = "order",required = false)String order,@PageableDefault(size = 12) Pageable pageable){
+    public Response listOrderByHeartsLength(@RequestParam(value = "order",required = false)String order,@PageableDefault(size = 12) Pageable pageable){
         if(order == null){
             Page<Review> reviews = reviewService.findReviews(pageable.getPageNumber(), pageable.getPageSize());
             List<ReviewResponse> result = reviews.stream()
                     .map(o->new ReviewResponse(o))
                     .collect(Collectors.toList());
-            return result;
+            return new Response<>("성공","리뷰 가져오기",result);
         }
         else if (order.equals("heart")) {
             Page<Review> reviews = reviewService.findReviewsOrderByHeartsLength(pageable.getPageNumber(), pageable.getPageSize());
             List<ReviewResponse> result = reviews.stream()
                     .map(o -> new ReviewResponse(o))
                     .collect(Collectors.toList());
-            System.out.println("hello");
-            return result;
+            return new Response<>("성공","좋아요 순으로 리뷰 가져오기",result);
         }
-        return new ArrayList<>();
+        return new Response("실패","실패",null);
     }
 
     @Data

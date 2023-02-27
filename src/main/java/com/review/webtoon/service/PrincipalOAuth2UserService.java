@@ -44,7 +44,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         String email = oAuth2UserInfo.getEmail();
         Role role = Role.ROLE_USER;
         System.out.println(email);
-        Member byUsername = memberRepository.findByUsername(username);
+        Member byUsername = memberRepository.findByUsername(username).get();
 
         if(memberRepository.findByUsername(username) == null){
             byUsername = Member.oauth2Register()

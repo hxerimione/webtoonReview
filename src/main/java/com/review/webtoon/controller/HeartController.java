@@ -2,7 +2,7 @@ package com.review.webtoon.controller;
 
 import com.review.webtoon.auth.PrincipalDetails;
 import com.review.webtoon.entity.Member;
-import com.review.webtoon.entity.MessageDto;
+import com.review.webtoon.dto.MessageDto;
 import com.review.webtoon.service.HeartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

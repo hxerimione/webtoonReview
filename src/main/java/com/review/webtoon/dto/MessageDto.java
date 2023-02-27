@@ -1,4 +1,4 @@
-package com.review.webtoon.entity;
+package com.review.webtoon.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
